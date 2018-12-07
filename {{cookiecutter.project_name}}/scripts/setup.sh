@@ -1,0 +1,173 @@
+#!/bin/bash
+set -e
+set -u
+set -o pipefail
+
+###############################################################################
+#
+echo  -e "\nJOB: ${PWD}" >&2
+echo  -e "${0}: Running the work-package setup-script." >&2
+#
+
+###############################################################################
+
+die_and_moan()
+{
+  echo -e "$1" >&2
+  exit 1
+}
+
+##############################################################################
+# - Each of the following files / directories should be defined before running
+# this script.
+# - They will typically be initialised using infx_scripts/bin/new_project.sh
+
+export CONFIG_DIR="./.setup_config"
+export SCRIPT_DIR="./scripts"
+export LIB_DIR="./lib"
+
+export JOB_VARS_FILE="${CONFIG_DIR}/job_specific_vars.sh"
+export CHECK_DIRS_FILE="${CONFIG_DIR}/check_these_dirs.txt"
+export MAKE_DIRS_FILE="${CONFIG_DIR}/make_these_subdirs.txt"
+export MAKE_LINKS_FILE="${CONFIG_DIR}/make_these_links.txt"
+export MAKE_FILE_COPIES_FILE="${CONFIG_DIR}/copy_these_files.txt"
+export MAKE_DIR_COPIES_FILE="${CONFIG_DIR}/copy_these_dirs.txt"
+export TOUCH_FILES_FILE="${CONFIG_DIR}/touch_these_files.txt"
+export SUBJOBS_FILE="${CONFIG_DIR}/subjob_names.txt"
+export SETUP_HELPERS_DIR="${SCRIPT_DIR}/helpers_for_setup"
+
+###############################################################################
+# - Setup / check variable definitions
+#   - The file ./.setup_confif/job_specific_vars.sh should exist and contain
+#   the definitions of all job-specific variables
+#   - All setup.sh files require that JOBNAME and IS_R_REQUIRED are defined
+#   - If IS_R_REQUIRED is 1, PKGNAME and R_KERNEL should be defined
+#   - PKGNAME is checked within setup_libs.sh
+#   - ENVNAME should be defined in job_specific_vars.sh and is checked by
+#   check_env.sh
+
+if [[ ! -f "${JOB_VARS_FILE}" ]];
+then
+  die_and_moan \
+  "${0}: File ${JOB_VARS_FILE} should be defined"
+fi
+
+source "${JOB_VARS_FILE}"
+
+if [[ -z "${JOBNAME}" ]];
+then
+  die_and_moan \
+  "${0}: Variable JOBNAME should be defined in ${JOB_VARS_FILE}"
+fi
+
+if [[ -z "${ENVNAME}" ]];
+then
+  die_and_moan \
+  "${0}: Variable ENVNAME (giving the name of the CONDA environment for \
+  \n ... the current job) should be defined in ${JOB_VARS_FILE}"
+fi
+
+if [[ -z "${IS_R_REQUIRED}" ]] && \
+   [[ ${IS_R_REQUIRED} -ne 0 ]] && \
+   [[ ${IS_R_REQUIRED} -ne 1 ]];
+then
+  die_and_moan \
+  "${0}: Binary variable IS_R_REQUIRED should be defined in ${JOB_VARS_FILE}"
+fi
+
+###############################################################################
+# - Job should only be ran on Linux
+#
+if [[ "${OSTYPE}" != "linux-gnu" ]];
+then
+  die_and_moan \
+  "${0}: OSTYPE should be linux-gnu"
+fi
+
+###############################################################################
+# - Ensure that <ENVNAME> is the name of the current env and that python /
+# Rscript are ran from $CONDA/envs/$ENVNAME/bin/
+#
+if [[ ! -f "${SETUP_HELPERS_DIR}/check_env.sh" ]]
+then
+  die_and_moan \
+  "${0}: ${SETUP_HELPERS_DIR}/check_env.sh is not a file: \
+  \n ... Cannot check that the ${ENVNAME} environment has been activated"
+fi
+
+bash ${SETUP_HELPERS_DIR}/check_env.sh \
+     ${ENVNAME}
+
+###############################################################################
+# - Ensure the R kernel for this project can be accessed by jupyter nbconvert
+# and within jupyter by adding it to the kernelspec list
+#
+if [[ ${IS_R_REQUIRED} -eq 1 ]];
+then
+  if [[ -z "${R_KERNEL}" ]];
+  then
+    die_and_moan \
+    "${0}: R_KERNEL name should be defined in ${JOB_VARS_FILE}"
+  fi
+  # check if the current kernel name is present in the list of available
+  #  r-kernels for jupyter:
+  # The final ` || : ` step prevents an empty grep-return-value from killing
+  # the script; we do this since CHECK_KERNELS is subsequently double checked
+  # for exact matching against the name of R_KERNEL
+  CHECK_KERNELS=$( jupyter kernelspec list |\
+                   cut -d" " -f3 |\
+                   grep -e "${R_KERNEL}" - ) || :
+  if [[ "${CHECK_KERNELS}" == "${R_KERNEL}" ]];
+  then
+    echo "${0}: Kernel '${R_KERNEL}' is already available" >&2
+  else
+    echo "${0}: Adding Kernel '${R_KERNEL}'" >&2
+    Rscript \
+      -e "kern_name = commandArgs(trailingOnly = TRUE)[1];" \
+      -e "library(IRkernel);" \
+      -e "IRkernel::installspec(name = kern_name, displayname = kern_name);" \
+       "${R_KERNEL}"
+  fi
+fi
+
+###############################################################################
+# - Check that
+#   - all internal directories/files are present (and make them if not);
+#   - all necessary external directories are present;
+#   - all links to / copies of external datafiles/scripts are set up.
+# - This includes any R function scripts that are hard-copied into this job
+#
+
+DIRS_SCRIPT="${SETUP_HELPERS_DIR}/setup_dirs.sh"
+if [[ ! -f "${DIRS_SCRIPT}" ]];
+then
+  die_and_moan \
+  "${0}: ${DIRS_SCRIPT} should exist"
+fi
+
+bash ${DIRS_SCRIPT}
+
+###############################################################################
+# - Construct the R package for this job
+#
+PKGS_SCRIPT="${SETUP_HELPERS_DIR}/setup_libs.sh"
+if [[ ! -f "${PKGS_SCRIPT}" ]];
+then
+  die_and_moan \
+  "${0}: ${PKGS_SCRIPT} should exist"
+fi
+
+bash ${PKGS_SCRIPT}
+
+###############################################################################
+# - Setup all subjobs for this job
+# - It is not an error if the setup_subjobs.sh script is missing
+SUBJOB_SCRIPT="${SETUP_HELPERS_DIR}/setup_subjobs.sh"
+if [[ ! -f "${SUBJOB_SCRIPT}" ]];
+then
+  echo "${0}: No subjob-definition script is available for '${PWD}'" >&2
+else
+  bash "${SUBJOB_SCRIPT}"
+fi
+
+###############################################################################
