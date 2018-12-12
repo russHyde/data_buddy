@@ -4,19 +4,20 @@ set -u
 set -o pipefail
 
 ###############################################################################
-# 5 / 12 / 2016
 #
 # Script to
 #   i) set up the directory structure of the current project,
 #   ii) check the existence of any required external directories
 #   iii) make links from the current project to any specified external files
 #   iv) make copies of any specified external files in the current project
+#   v) import any github/bitbucket repositories into the current project
 #
 # User must define CHECK_DIRS_FILE,
 #                  MAKE_DIRS_FILE,
 #                  MAKE_LINKS_FILE,
 #                  MAKE_FILE_COPIES_FILE
-#                  TOUCH_FILES_FILE
+#                  TOUCH_FILES_FILE,
+#                  CLONE_REPOS_FILE (.yaml file)
 #
 # If these filenames aren't defined (or are not valid files), the script will
 #   die and the corresponding files/dirs/links will not be made/checked
@@ -86,6 +87,14 @@ then
   "${0}: User should define/export TOUCH_FILES_FILE, a file(name) \
   \n ... containing a list of filenames that should be constructed \
   \n ... (even if empty) after running 'setup_dirs.sh'"
+fi
+
+if [[ -z "${CLONE_REPOS_FILE}" ]] || [[ ! -f "${CLONE_REPOS_FILE}" ]];
+then
+  die_and_moan \
+  "${0}: User should define/export CLONE_REPOS_FILE, a yaml file \
+  \n ... defining any git repositories (and specific commits therein) that
+  \n ... should be cloned and added to the current project"
 fi
 
 ###############################################################################
@@ -366,6 +375,10 @@ do
     "${COPY_LOC}"
 
 done < "${MAKE_DIR_COPIES_FILE}"
+
+###############################################################################
+
+python3 ./scripts/helpers_for_setup/setup_git_clones.py "${CLONE_REPOS_FILE}"
 
 ###############################################################################
 # After copying all files / making all links / setting up all dirs if a
