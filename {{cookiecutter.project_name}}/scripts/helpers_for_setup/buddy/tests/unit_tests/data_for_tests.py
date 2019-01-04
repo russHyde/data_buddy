@@ -1,21 +1,17 @@
 def repo_data1():
-    return 'https://some_url.org',\
-           'a1b2c3d',\
-           './store/me/here/repo_name'
+    return "https://some_url.org", "a1b2c3d", "./store/me/here/repo_name"
 
 
 def repo_dict1():
-    return dict(zip(['url', 'commit', 'output'], repo_data1()))
+    return dict(zip(["url", "commit", "output"], repo_data1()))
 
 
 def repo_data2():
-    return 'git@github.com:user/my_package.git', \
-           'zyx9876',\
-           'my_local_package'
+    return "git@github.com:user/my_package.git", "zyx9876", "my_local_package"
 
 
 def repo_dict2():
-    return dict(zip(['url', 'commit', 'output'], repo_data2()))
+    return dict(zip(["url", "commit", "output"], repo_data2()))
 
 
 def yaml_document():
