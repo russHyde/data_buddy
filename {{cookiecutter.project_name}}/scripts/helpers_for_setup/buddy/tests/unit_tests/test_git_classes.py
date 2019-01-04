@@ -1,16 +1,17 @@
-from buddy.git_classes import ExternalRepository, \
-    LocalRepository
+import os
+import sh
+
+from mock import mock_open, patch
+
+from buddy.git_classes import ExternalRepository, LocalRepository
 
 from tests.unit_tests.data_for_tests import repo_data1, repo_data2
 
 
 class TestExternalRepositoryClass(object):
-
     def test_init(self):
         path, commit, output = repo_data1()
-        repo = ExternalRepository(
-            path, commit, output
-        )
+        repo = ExternalRepository(path, commit, output)
         assert isinstance(repo, ExternalRepository)
         assert repo.input_path == path
         assert repo.commit == commit
@@ -29,10 +30,19 @@ class TestExternalRepositoryClass(object):
 
 
 class TestLocalRepositoryClass(object):
-
     def test_init(self):
         path, commit, _ = repo_data1()
         repo = LocalRepository(path, commit)
         assert isinstance(repo, LocalRepository)
         assert repo.path == path
         assert repo.commit == commit
+
+
+class TestGitClone(object):
+    def test_clone_when_no_local_copy(self, mocker):
+        # note that we can't patch the function `sh.git.clone`
+        mocker.patch("sh.git")
+        repo = ExternalRepository(*repo_data1())
+        assert not os.path.exists(repo.output_path)
+        repo.clone()
+        sh.git.assert_called_once_with("clone", repo.input_path, repo.output_path)
