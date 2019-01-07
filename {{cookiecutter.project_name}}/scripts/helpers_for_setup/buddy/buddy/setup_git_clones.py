@@ -48,6 +48,7 @@ def run_workflow(yaml_file):
     repositories = import_repository_details(yaml_file)
     for _, repo in repositories.items():
         repo.clone()
+        repo.checkout()
 
 
 def define_command_arg_parser():
