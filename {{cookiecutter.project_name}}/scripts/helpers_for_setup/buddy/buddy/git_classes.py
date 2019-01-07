@@ -4,6 +4,8 @@ copied into a given file-path.
 """
 
 import os
+import sys
+
 import sh
 
 
@@ -77,15 +79,21 @@ class ExternalRepository:
         Clone the requested repository into the directory `output_path` and
         ensure that the requested `commit` is checked out
         """
-        sh.git("clone", self.input_path, self.output_path)
+        if not self.local_exists():
+            sh.git("clone", self.input_path, self.output_path)
         # TODO:
-        # check if output directory is occupied
-        # if it is:
+        # if output dir is occupied:
         # - check that the sha-1 hash matches the wanted commit
         #   and throw an exception if it doesn't
         # otherwise:
-        # - check that the URL exists
-        # - clone from the URL to a temp directory
+        # - try to clone from the URL to a temp directory
         # - checkout the requested commit (throw exception if it
         #   doesn't exist)
         # - move from the temp directory to output
+
+    def checkout(self):
+        try:
+            sh.git("-C", self.output_path, "checkout", self.commit)
+        except Exception as e:
+            print(e)
+            sys.exit(1)
