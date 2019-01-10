@@ -1,0 +1,15 @@
+# Data directories and computed files
+
+data
+logs
+temp
+
+*.tar.gz
+
+# Application logs
+
+.snakemake
+
+# Development
+
+.idea
