@@ -175,8 +175,10 @@ fi
 # Where I've copied one of my own packages into the source code for a package,
 #   build that package and put the package-archive into ./lib/built_packages
 #
-if [[ -d "./lib/copied_packages" ]]; then
-  for PKG_PATH in ./lib/copied_packages/*;
+if [[ -d "./lib/copied_packages" ]] || [[ -d "./lib/cloned_packages" ]]; then
+  for PKG_PATH in \
+    $(find "lib/cloned_packages" -maxdepth 1 -mindepth 1 -type d) \
+    $(find "lib/copied_packages" -maxdepth 1 -mindepth 1 -type d);
   do
     Rscript \
       ./scripts/helpers_for_setup/package_builder.R \
@@ -190,7 +192,8 @@ fi
 # Install any of the packages that were copied into the current R environment
 #
 if [[ -d "./lib/built_packages" ]]; then
-  for PKG_TAR in ./lib/built_packages/*.tar.gz;
+  for PKG_TAR in \
+    $(find "lib/built_packages" -name "*.tar.gz");
   do
     # The R library directory for the current conda environment is:
     R_LIB_DIR="${CONDA_PREFIX}/lib/R/library"
