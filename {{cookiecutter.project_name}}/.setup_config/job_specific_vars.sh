@@ -16,7 +16,7 @@ export IS_R_PKG_REQUIRED=
 # Nonessential variables:
 #
 # - Define which external R packages are 'include'd by the job-specific package
-# export R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
+export R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
 
 ###############################################################################
 # PKGNAME and ENVNAME can be overridden by the user

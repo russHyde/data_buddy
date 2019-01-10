@@ -17,7 +17,7 @@ set -o pipefail
 #                  MAKE_LINKS_FILE,
 #                  MAKE_FILE_COPIES_FILE
 #                  TOUCH_FILES_FILE,
-#                  CLONE_REPOS_FILE (.yaml file)
+#                  REPO_CLONING_CONFIG (.yaml file)
 #
 # If these filenames aren't defined (or are not valid files), the script will
 #   die and the corresponding files/dirs/links will not be made/checked
@@ -89,7 +89,7 @@ then
   \n ... (even if empty) after running 'setup_dirs.sh'"
 fi
 
-if [[ -z "${CLONE_REPOS_FILE}" ]] || [[ ! -f "${CLONE_REPOS_FILE}" ]];
+if [[ -z "${REPO_CLONING_CONFIG}" ]] || [[ ! -f "${REPO_CLONING_CONFIG}" ]];
 then
   die_and_moan \
   "${0}: User should define/export CLONE_REPOS_FILE, a yaml file \
@@ -146,6 +146,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -154,6 +155,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   TARGET=$( expand_tilde "${ARY[0]}"  )
   LINKNAME=$( expand_tilde "${ARY[1]}" )
@@ -267,6 +269,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -275,6 +278,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   ORIGINAL=$( expand_tilde "${ARY[0]}" )
   COPYFILE=$( expand_tilde "${ARY[1]}" )
@@ -334,6 +338,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -342,6 +347,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   ORIGINAL_LOC=$( expand_tilde "${ARY[0]}" )
   COPY_LOC=$( expand_tilde "${ARY[1]}" )
@@ -378,7 +384,15 @@ done < "${MAKE_DIR_COPIES_FILE}"
 
 ###############################################################################
 
-python3 ./scripts/helpers_for_setup/setup_git_clones.py "${CLONE_REPOS_FILE}"
+REPO_CLONING_SCRIPT="${BUDDY_PY}/buddy/setup_git_clones.py"
+
+if [[ ! -f "${REPO_CLONING_SCRIPT}" ]];
+then
+  die_and_moan \
+  "${0}: git cloning script: '${REPO_CLONING_SCRIPT}' is not available"
+fi
+
+python3 "${REPO_CLONING_SCRIPT}" "${REPO_CLONING_CONFIG}"
 
 ###############################################################################
 # After copying all files / making all links / setting up all dirs if a
