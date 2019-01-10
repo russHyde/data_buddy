@@ -4,19 +4,20 @@ set -u
 set -o pipefail
 
 ###############################################################################
-# 5 / 12 / 2016
 #
 # Script to
 #   i) set up the directory structure of the current project,
 #   ii) check the existence of any required external directories
 #   iii) make links from the current project to any specified external files
 #   iv) make copies of any specified external files in the current project
+#   v) import any github/bitbucket repositories into the current project
 #
 # User must define CHECK_DIRS_FILE,
 #                  MAKE_DIRS_FILE,
 #                  MAKE_LINKS_FILE,
 #                  MAKE_FILE_COPIES_FILE
-#                  TOUCH_FILES_FILE
+#                  TOUCH_FILES_FILE,
+#                  REPO_CLONING_CONFIG (.yaml file)
 #
 # If these filenames aren't defined (or are not valid files), the script will
 #   die and the corresponding files/dirs/links will not be made/checked
@@ -88,6 +89,14 @@ then
   \n ... (even if empty) after running 'setup_dirs.sh'"
 fi
 
+if [[ -z "${REPO_CLONING_CONFIG}" ]] || [[ ! -f "${REPO_CLONING_CONFIG}" ]];
+then
+  die_and_moan \
+  "${0}: User should define/export CLONE_REPOS_FILE, a yaml file \
+  \n ... defining any git repositories (and specific commits therein) that
+  \n ... should be cloned and added to the current project"
+fi
+
 ###############################################################################
 # Check the existence of all directorys named in CHECK_DIRS_FILE file
 while read -r DNAME;
@@ -137,6 +146,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -145,6 +155,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   TARGET=$( expand_tilde "${ARY[0]}"  )
   LINKNAME=$( expand_tilde "${ARY[1]}" )
@@ -258,6 +269,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -266,6 +278,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   ORIGINAL=$( expand_tilde "${ARY[0]}" )
   COPYFILE=$( expand_tilde "${ARY[1]}" )
@@ -325,6 +338,7 @@ do
   #   - die if either are emptystrings
   #   - check that there are only two entries on the line
   ARY=(${LINE})
+  {% raw -%}
   if [[ ${#ARY[@]} -ne 2 ]] || \
      [[ -z "${ARY[0]}" ]]   || \
      [[ -z "${ARY[1]}" ]];
@@ -333,6 +347,7 @@ do
     "${0}: Couldn't parse target-name and link-name from '${LINE}' \
     \n ... make sure there's no spaces in your filenames"
   fi
+  {%- endraw %}
 
   ORIGINAL_LOC=$( expand_tilde "${ARY[0]}" )
   COPY_LOC=$( expand_tilde "${ARY[1]}" )
@@ -366,6 +381,18 @@ do
     "${COPY_LOC}"
 
 done < "${MAKE_DIR_COPIES_FILE}"
+
+###############################################################################
+
+REPO_CLONING_SCRIPT="${BUDDY_PY}/buddy/setup_git_clones.py"
+
+if [[ ! -f "${REPO_CLONING_SCRIPT}" ]];
+then
+  die_and_moan \
+  "${0}: git cloning script: '${REPO_CLONING_SCRIPT}' is not available"
+fi
+
+python3 "${REPO_CLONING_SCRIPT}" "${REPO_CLONING_CONFIG}"
 
 ###############################################################################
 # After copying all files / making all links / setting up all dirs if a

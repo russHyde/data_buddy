@@ -32,9 +32,12 @@ export MAKE_DIRS_FILE="${CONFIG_DIR}/make_these_subdirs.txt"
 export MAKE_LINKS_FILE="${CONFIG_DIR}/make_these_links.txt"
 export MAKE_FILE_COPIES_FILE="${CONFIG_DIR}/copy_these_files.txt"
 export MAKE_DIR_COPIES_FILE="${CONFIG_DIR}/copy_these_dirs.txt"
+export REPO_CLONING_CONFIG="${CONFIG_DIR}/clone_these_repos.yaml"
 export TOUCH_FILES_FILE="${CONFIG_DIR}/touch_these_files.txt"
 export SUBJOBS_FILE="${CONFIG_DIR}/subjob_names.txt"
+
 export SETUP_HELPERS_DIR="${SCRIPT_DIR}/helpers_for_setup"
+export BUDDY_PY="${SETUP_HELPERS_DIR}/buddy"
 
 ###############################################################################
 # - Setup / check variable definitions
@@ -97,6 +100,18 @@ fi
 
 bash ${SETUP_HELPERS_DIR}/check_env.sh \
      ${ENVNAME}
+
+###############################################################################
+# - Ensure that the `buddy` python package is installed
+#
+if [[ ! -d "${BUDDY_PY}" ]]
+then
+  die_and_moan \
+  "${0}: ${BUDDY_PY} is required to setup env / dir / libs for this project"
+fi
+
+# TODO: ensure files in BUDDY_PY are newer than ${CONDA_PREFIX}/lib/buddy
+pip install -e "${BUDDY_PY}"
 
 ###############################################################################
 # - Ensure the R kernel for this project can be accessed by jupyter nbconvert
