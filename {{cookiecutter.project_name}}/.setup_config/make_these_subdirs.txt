@@ -13,8 +13,14 @@
 
 # Defaults for a new project/subproject:
 ./data
+./data/ext
+./data/int
+./data/job
 ./doc/figure
+./lib/built_packages
 ./lib/conf
+./lib/copied_packages
+./lib/cloned_packages
 ./lib/global_rfuncs
 ./lib/global_rfuncs/R
 ./lib/global_rfuncs/tests
@@ -24,4 +30,5 @@
 ./lib/local_rfuncs/tests
 ./lib/local_rfuncs/tests/testthat
 ./results
+./scripts/snake_recipes
 ./temp

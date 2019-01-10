@@ -8,9 +8,17 @@ library(devtools)
 get_output_path <- function(input_dir, output_dir) {
   library(desc)
 
-  stopifnot(dir.exists(input_dir))
-  stopifnot(dir.exists(output_dir))
-  stopifnot(file.exists(file.path(input_dir, "DESCRIPTION")))
+  if(! dir.exists(input_dir)){
+    stop(paste("Input directory:", input_dir, "should exist"))
+  }
+  if(! dir.exists(output_dir)){
+    stop(paste("Output directory:", output_dir, "should exist"))
+  }
+
+  description_file <- file.path(input_dir, "DESCRIPTION")
+  if(! file.exists(description_file)){
+    stop(paste("File:", description_file, "should exist"))
+  }
 
   # The description for the current package
   desc <- desc::description$new(source_dir)
