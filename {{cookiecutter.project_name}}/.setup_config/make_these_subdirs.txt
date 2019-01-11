@@ -17,6 +17,7 @@
 ./data/int
 ./data/job
 ./doc/figure
+./envs
 ./lib/built_packages
 ./lib/copied_packages
 ./lib/cloned_packages

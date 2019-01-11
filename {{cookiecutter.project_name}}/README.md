@@ -14,7 +14,7 @@ Change in to the project directory.
 
 If necessary, create the conda environment for the main project:
 
-`conda create --name {{cookiecutter.conda_env}} --file requirements.txt`
+`conda create --name {{cookiecutter.conda_env}} --file envs/requirements.txt`
 
 Activate the project's environment
 
