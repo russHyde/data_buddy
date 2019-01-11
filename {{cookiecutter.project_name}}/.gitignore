@@ -1,3 +1,7 @@
+# Cloned packages are commit-stamped, so we don't need to keep a local copy
+
+lib/cloned_packages
+
 # Data directories and computed files
 
 data
