@@ -9,7 +9,7 @@
 #
 # IS_R_REQUIRED=1 is required if an R kernel is to be made or R is to be used
 # IS_R_PKG_REQUIRED=1 is additionally required if an R package is to be made
-export JOBNAME={{cookiecutter.project_name}}
+export JOBNAME="{{cookiecutter.project_name}}"
 export IS_R_REQUIRED=
 export IS_R_PKG_REQUIRED=
 
@@ -25,7 +25,7 @@ export R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
 #   ./lib/global_rfuncs
 #
 export PKGNAME=`echo "${JOBNAME}" | sed s/_/./g`
-export ENVNAME="${JOBNAME}"
+export ENVNAME="{{cookiecutter.conda_env}}"
 
 ###############################################################################
 if [[ -n "${IS_R_REQUIRED}" ]] && [[ ${IS_R_REQUIRED} -ne 0 ]];

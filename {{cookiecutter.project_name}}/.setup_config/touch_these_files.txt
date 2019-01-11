@@ -11,11 +11,3 @@
 # Examples:
 # ./lib/conf/include_into_rpackage.txt
 # TODO.txt
-
-./Snakefile
-./TODO.md
-./.gitignore
-
-# 'Include' list for a project-specific R package: remove this if a package is
-# not being constructed
-./lib/conf/include_into_rpackage.txt
