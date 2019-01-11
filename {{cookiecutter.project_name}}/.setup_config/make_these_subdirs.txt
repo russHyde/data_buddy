@@ -18,7 +18,6 @@
 ./data/job
 ./doc/figure
 ./lib/built_packages
-./lib/conf
 ./lib/copied_packages
 ./lib/cloned_packages
 ./lib/global_rfuncs

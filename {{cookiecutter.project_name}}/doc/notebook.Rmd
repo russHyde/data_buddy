@@ -1,0 +1,24 @@
+---
+title: "Main Notebook for the `{{cookiecutter.project_name}}` Project"
+author: "{{cookiecutter.author_name}}"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+output:
+    pdf_document:
+        latex_engine: xelatex
+        number_sections: yes
+        df_print: kable
+        fig_caption: yes
+        fig_width: 7
+        fig_height: 7
+        includes:
+            in_header: "header.tex"
+urlcolor: blue
+---
+
+```{r}
+library(here)
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
