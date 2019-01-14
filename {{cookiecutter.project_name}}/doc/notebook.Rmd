@@ -15,10 +15,62 @@ output:
 urlcolor: blue
 ---
 
-```{r}
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+show_setup <- FALSE
+show_functions <- FALSE
+show_figure_code <- FALSE
+show_file_writes <- FALSE
+show_code <- TRUE
+```
+
+# Environment
+
+```{r, echo = !show_setup}
+# To see the environment-setup code, recompile with `show_setup = TRUE`
+```
+
+```{r, echo = show_setup}
 library(here)
 ```
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, echo = show_setup}
+pkgs <- c()
+
+for (pkg in pkgs) {
+  suppressPackageStartupMessages(
+    library(pkg, character.only = TRUE)
+  )
+}
 ```
+
+```{r, echo = show_setup}
+# For storing intermediate results that will be used in the text
+sketches <- list()
+
+# For storing results that will be presented in the Executive Summary
+gallery <- list()
+```
+
+# Functions
+
+```{r, echo = !show_functions}
+# To see the function definitions, recompile with `show_functions = TRUE`
+```
+
+# Directories
+
+---
+
+<!-- Main text (imports / analysis etc) goes here -->
+
+---
+
+# Executive Summary
+
+---
+
+# Appendix
+
+---
