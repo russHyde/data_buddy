@@ -92,7 +92,7 @@ fi
 if [[ -z "${REPO_CLONING_CONFIG}" ]] || [[ ! -f "${REPO_CLONING_CONFIG}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export CLONE_REPOS_FILE, a yaml file \
+  "${0}: User should define/export REPO_CLONING_CONFIG, a yaml file \
   \n ... defining any git repositories (and specific commits therein) that
   \n ... should be cloned and added to the current project"
 fi
