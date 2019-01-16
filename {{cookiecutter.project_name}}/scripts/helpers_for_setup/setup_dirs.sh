@@ -15,7 +15,8 @@ set -o pipefail
 # User must define CHECK_DIRS_FILE,
 #                  MAKE_DIRS_FILE,
 #                  MAKE_LINKS_FILE,
-#                  MAKE_FILE_COPIES_FILE
+#                  MAKE_FILE_COPIES_FILE,
+#                  MAKE_DIR_COPIES_FILE,
 #                  TOUCH_FILES_FILE,
 #                  REPO_CLONING_CONFIG (.yaml file)
 #
