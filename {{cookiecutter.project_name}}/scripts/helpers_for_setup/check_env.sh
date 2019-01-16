@@ -1,5 +1,7 @@
-#!/bin/bash -e
-## Note the error catching flag
+#!/bin/bash
+set -e
+set -u
+set -o pipefail
 
 ###############################################################################
 # 5 / 12/ 2016
