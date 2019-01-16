@@ -41,7 +41,7 @@ export BUDDY_PY="${SETUP_HELPERS_DIR}/buddy"
 
 ###############################################################################
 # - Setup / check variable definitions
-#   - The file ./.setup_confif/job_specific_vars.sh should exist and contain
+#   - The file ./.setup_config/job_specific_vars.sh should exist and contain
 #   the definitions of all job-specific variables
 #   - All setup.sh files require that JOBNAME and IS_R_REQUIRED are defined
 #   - If IS_R_REQUIRED is 1, PKGNAME and R_KERNEL should be defined
