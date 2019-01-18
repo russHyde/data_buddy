@@ -102,16 +102,15 @@ fi
 bash ${ENVS_SCRIPT} ${ENVNAME}
 
 ###############################################################################
-# - Ensure that the `buddy` python package is installed
+# - If the `buddy` python package has not previously been installed, install it
 #
-if [[ ! -d "${BUDDY_PY}" ]]
-then
-  die_and_moan \
-  "${0}: ${BUDDY_PY} is required to setup env / dir / libs for this project"
-fi
-
 # TODO: ensure files in BUDDY_PY are newer than ${CONDA_PREFIX}/lib/buddy
-pip install -e "${BUDDY_PY}"
+#
+if $(conda list | grep -qe "^buddy\\b"); then
+  echo "'buddy' has already been installed" >&2
+else
+  pip install -e "${BUDDY_PY}"
+fi
 
 ###############################################################################
 # - Ensure the R kernel for this project can be accessed by jupyter nbconvert
