@@ -1,19 +1,45 @@
 # Cloned packages are commit-stamped, so we don't need to keep a local copy
 
-lib/cloned_packages
+**/lib/cloned_packages
 
-# Data directories and computed files
+# Data files / directories
 
 data
-logs
-temp
-
+.RData
 *.tar.gz
+
+# Computed files
+
+results
+man
+doc/figure
+
+*.pdf
+*.png
+*.html
+*.jar
 
 # Application logs
 
+logs
+
 .snakemake
+.Rhistory
+*.Rcheck
+.ipynb_checkpoints
 
 # Development
 
 .idea
+
+# Temp files
+
+temp
+
+*.swp
+*.knit.md
+*.utf8.md
+
+# RStudio configs
+
+.Rproj.user
