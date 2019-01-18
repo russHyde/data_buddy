@@ -10,8 +10,9 @@
 # IS_R_REQUIRED=1 is required if an R kernel is to be made or R is to be used
 # IS_R_PKG_REQUIRED=1 is additionally required if an R package is to be made
 export JOBNAME="{{cookiecutter.project_name}}"
-export IS_R_REQUIRED=
-export IS_R_PKG_REQUIRED=
+export IS_R_REQUIRED={{cookiecutter.is_r_required}}
+export IS_R_PKG_REQUIRED={{cookiecutter.is_r_pkg_required}}
+export IS_JUPYTER_R_REQUIRED={{cookiecutter.is_jupyter_r_kernel_required}}
 
 # Nonessential variables:
 #
@@ -28,7 +29,7 @@ export PKGNAME=`echo "${JOBNAME}" | sed s/_/./g`
 export ENVNAME="{{cookiecutter.conda_env}}"
 
 ###############################################################################
-if [[ -n "${IS_R_REQUIRED}" ]] && [[ ${IS_R_REQUIRED} -ne 0 ]];
+if [[ ! -z "${IS_JUPYTER_R_REQUIRED}" ]] && [[ ${IS_JUPYTER_R_REQUIRED} -ne 0 ]];
 then
   export R_KERNEL="conda-env-${ENVNAME}-r"
 fi

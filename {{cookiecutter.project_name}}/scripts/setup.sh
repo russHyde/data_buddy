@@ -116,7 +116,7 @@ fi
 # - Ensure the R kernel for this project can be accessed by jupyter nbconvert
 # and within jupyter by adding it to the kernelspec list
 #
-if [[ ${IS_R_REQUIRED} -eq 1 ]];
+if [[ ${IS_JUPYTER_R_REQUIRED} -ne 0 ]];
 then
   if [[ -z "${R_KERNEL}" ]];
   then
