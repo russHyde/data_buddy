@@ -1,9 +1,9 @@
 {
     "project_name": "my_new_project",
     "author_name": "Russell Hyde",
-    "conda_env": "{{ cookiecutter.project_name|lower|replace(' ', '_')|replace('-', '_') }}",
+    "conda_env": "{{ cookiecutter.project_name | lower | replace(' ', '_') | replace('-', '_') }}",
     "is_r_required": 1,
     "is_r_pkg_required": "{{ cookiecutter.is_r_required }}",
-    "r_pkg_name": "{{ cookiecutter.project_name|lower|replace(' ', '.')|replace('-', '.') }}",
+    "r_pkg_name": "{{cookiecutter.project_name | lower | replace(' ','.') | replace('_', '.') | replace('-','.')}}",
     "is_jupyter_r_kernel_required": 0
 }
