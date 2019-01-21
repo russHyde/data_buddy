@@ -4,10 +4,9 @@ set -u
 set -o pipefail
 
 ###############################################################################
-#
+
 echo  -e "\nJOB: ${PWD}" >&2
 echo  -e "${0}: Running the work-package setup-script." >&2
-#
 
 ###############################################################################
 
@@ -18,9 +17,9 @@ die_and_moan()
 }
 
 ##############################################################################
-# - Each of the following files / directories should be defined before running
+# Each of the following files / directories should be defined before running
 # this script.
-# - They will typically be initialised using infx_scripts/bin/new_project.sh
+# - They will typically be initialised using `cookiecutter`
 
 export CONFIG_DIR="./.setup_config"
 export SCRIPT_DIR="./scripts"
@@ -41,13 +40,15 @@ export BUDDY_PY="${SETUP_HELPERS_DIR}/buddy"
 
 ###############################################################################
 # - Setup / check variable definitions
-#   - The file ./.setup_config/job_specific_vars.sh should exist and contain
-#   the definitions of all job-specific variables
-#   - All setup.sh files require that JOBNAME and IS_R_REQUIRED are defined
-#   - If IS_R_REQUIRED is 1, PKGNAME and R_KERNEL should be defined
-#   - PKGNAME is checked within setup_libs.sh
-#   - ENVNAME should be defined in job_specific_vars.sh and is checked by
-#   check_env.sh
+#   - The file `./.setup_config/job_specific_vars.sh` should exist and contain
+#   the definitions of all job-specific variables;
+#   - All setup-related files require that `JOBNAME`, `ENVNAME` and
+#   `IS_R_REQUIRED` are defined;
+#   - If `IS_R_PKG_REQUIRED` is 1, `PKGNAME` should be defined;
+#   - If `IS_JUPYTER_R_REQUIRED` is 1, `R_KERNEL` should be defined;
+#   - `PKGNAME` is checked within `setup_libs.sh`;
+#   - `ENVNAME` should be defined in `job_specific_vars.sh` and is checked by
+#   `check_env.sh`
 
 if [[ ! -f "${JOB_VARS_FILE}" ]];
 then
@@ -113,8 +114,9 @@ else
 fi
 
 ###############################################################################
-# - Ensure the R kernel for this project can be accessed by jupyter nbconvert
-# and within jupyter by adding it to the kernelspec list
+# If the current project uses R within jupyter:
+# - Ensure an R kernel can be accessed by `jupyter nbconvert` and within
+# `jupyter` by adding `R_KERNEL` to the `kernelspec` list
 #
 if [[ ${IS_JUPYTER_R_REQUIRED} -ne 0 ]];
 then
@@ -175,7 +177,7 @@ bash ${PKGS_SCRIPT}
 
 ###############################################################################
 # - Setup all subjobs for this job
-# - It is not an error if the setup_subjobs.sh script is missing
+# - It is not an error if the `setup_subjobs.sh` script is missing
 SUBJOB_SCRIPT="${SETUP_HELPERS_DIR}/setup_subjobs.sh"
 if [[ ! -f "${SUBJOB_SCRIPT}" ]];
 then
