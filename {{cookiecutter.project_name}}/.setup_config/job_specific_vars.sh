@@ -25,7 +25,11 @@ export R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
 #   adds some files to the subdirectories ./lib/local_rfuncs/R or
 #   ./lib/global_rfuncs
 #
-export PKGNAME=`echo "${JOBNAME}" | sed s/_/./g`
+if [[ ! -z "${IS_R_PKG_REQUIRED}" ]] && [[ ${IS_R_PKG_REQUIRED} -ne 0 ]];
+then
+  export PKGNAME="{{cookiecutter.r_pkg_name}}"
+fi
+
 export ENVNAME="{{cookiecutter.conda_env}}"
 
 ###############################################################################
