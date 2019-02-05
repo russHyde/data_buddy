@@ -8,7 +8,7 @@ def commit_file_and_get_hash(repo_path, file_name):
     with sh.pushd(repo_path):
         sh.touch(file_name)
         sh.git("add", file_name)
-        sh.git("commit", "-m", "adding {}".format(file_name))
+        sh.git("commit", "-m", "'adding {}'".format(file_name))
         commit_hash = str(sh.git("rev-parse", "HEAD")).strip()
         return commit_hash
 
