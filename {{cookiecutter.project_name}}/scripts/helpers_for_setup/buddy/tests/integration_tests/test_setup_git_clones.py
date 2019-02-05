@@ -15,8 +15,8 @@ def commit_file_and_get_hash(repo_path, file_name):
 
 class TestGitInit(object):
 
-    def test_initial_commit(self):
-        with tempfile.TemporaryDirectory() as temp_dir, sh.pushd(temp_dir):
+    def test_initial_commit(self, tmpdir):
+        with sh.pushd(tmpdir):
             repo_name = "my_repo"
             assert not os.path.isdir(repo_name)
             sh.git("init", repo_name)
@@ -25,8 +25,8 @@ class TestGitInit(object):
 
 class TestCheckoutHead(object):
 
-    def test_clone_git_repo(self):
-        with tempfile.TemporaryDirectory() as temp_dir, sh.pushd(temp_dir):
+    def test_clone_git_repo(self, tmpdir):
+        with sh.pushd(tmpdir):
             repo_name = "my_repo"
             sh.git("init", repo_name)
 
@@ -48,8 +48,8 @@ class TestCheckoutHead(object):
 
 class TestCheckoutEarlyCommit(object):
 
-    def test_clone_and_checkout(self):
-       with tempfile.TemporaryDirectory() as temp_dir, sh.pushd(temp_dir):
+    def test_clone_and_checkout(self, tmpdir):
+       with sh.pushd(tmpdir):
             repo_name = "my_repo"
             sh.git("init", repo_name)
 
