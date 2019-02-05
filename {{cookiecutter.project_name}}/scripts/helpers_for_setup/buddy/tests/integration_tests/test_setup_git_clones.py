@@ -4,6 +4,7 @@ import pytest
 
 from buddy.git_classes import ExternalRepository
 
+
 def commit_file_and_get_hash(repo_path, file_name):
     with sh.pushd(repo_path):
         sh.touch(file_name)
@@ -14,7 +15,6 @@ def commit_file_and_get_hash(repo_path, file_name):
 
 
 class TestGitInit(object):
-
     def test_initial_commit(self, tmpdir):
         with sh.pushd(tmpdir):
             repo_name = "my_repo"
@@ -24,7 +24,6 @@ class TestGitInit(object):
 
 
 class TestCheckoutHead(object):
-
     def test_clone_git_repo(self, tmpdir):
         with sh.pushd(tmpdir):
             repo_name = "my_repo"
@@ -34,9 +33,7 @@ class TestCheckoutHead(object):
             commit_hash_2 = commit_file_and_get_hash(repo_name, "file2")
 
             copied_repo_name = "my_copy"
-            copied_repo = ExternalRepository(
-                repo_name, commit_hash_2, copied_repo_name
-            )
+            copied_repo = ExternalRepository(repo_name, commit_hash_2, copied_repo_name)
             assert not os.path.isdir(copied_repo_name)
             copied_repo.clone()
             copied_repo.checkout()
@@ -47,9 +44,8 @@ class TestCheckoutHead(object):
 
 
 class TestCheckoutEarlyCommit(object):
-
     def test_clone_and_checkout(self, tmpdir):
-       with sh.pushd(tmpdir):
+        with sh.pushd(tmpdir):
             repo_name = "my_repo"
             sh.git("init", repo_name)
 
@@ -57,9 +53,7 @@ class TestCheckoutEarlyCommit(object):
             _ = commit_file_and_get_hash(repo_name, "file2")
 
             copied_repo_name = "my_copy"
-            copied_repo = ExternalRepository(
-                repo_name, commit_hash_1, copied_repo_name
-            )
+            copied_repo = ExternalRepository(repo_name, commit_hash_1, copied_repo_name)
             copied_repo.clone()
             copied_repo.checkout()
 
@@ -69,7 +63,6 @@ class TestCheckoutEarlyCommit(object):
 
 
 class TestCheckoutInvalidHash(object):
-
     def test_checkout_invalid_hash(self, tmpdir):
         with sh.pushd(tmpdir):
             repo_name = "my_repo"
