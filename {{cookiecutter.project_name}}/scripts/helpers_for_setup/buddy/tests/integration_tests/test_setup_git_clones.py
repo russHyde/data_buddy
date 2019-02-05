@@ -1,6 +1,6 @@
-import tempfile
 import sh
 import os
+import pytest
 
 from buddy.git_classes import ExternalRepository
 
@@ -63,7 +63,27 @@ class TestCheckoutEarlyCommit(object):
             copied_repo.clone()
             copied_repo.checkout()
 
-            assert os.path.isdir(copied_repo_name)
             with sh.pushd(copied_repo_name):
                 assert os.path.isfile("file1")
                 assert not os.path.isfile("file2")
+
+
+class TestCheckoutInvalidHash(object):
+
+    def test_checkout_invalid_hash(self, tmpdir):
+        with sh.pushd(tmpdir):
+            repo_name = "my_repo"
+            sh.git("init", repo_name)
+
+            _ = commit_file_and_get_hash(repo_name, "file1")
+            _ = commit_file_and_get_hash(repo_name, "file2")
+
+            copied_repo_name = "my_copy"
+            copied_repo = ExternalRepository(
+                repo_name, "NOTAHASHCODE", copied_repo_name
+            )
+            copied_repo.clone()
+            assert os.path.isdir(copied_repo_name)
+
+            with pytest.raises(sh.ErrorReturnCode):
+                copied_repo.checkout()
