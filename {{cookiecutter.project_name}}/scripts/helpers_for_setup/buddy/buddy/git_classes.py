@@ -94,6 +94,6 @@ class ExternalRepository:
     def checkout(self):
         try:
             sh.git("-C", self.output_path, "checkout", self.commit)
-        except Exception as e:
-            print(e)
+        except Exception:
+            raise
             sys.exit(1)
