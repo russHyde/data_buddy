@@ -1,8 +1,6 @@
 import os
 
-from mock import mock_open, patch
-
-from buddy.setup_git_clones import parse_repository_details, read_repository_details
+from buddy.setup_git_clones import parse_repository_details
 from buddy.git_classes import ExternalRepository
 
 from tests.unit_tests.data_for_git_tests import (
@@ -10,7 +8,6 @@ from tests.unit_tests.data_for_git_tests import (
     repo_dict1,
     repo_data2,
     repo_dict2,
-    yaml_document,
 )
 
 
@@ -32,22 +29,6 @@ class TestParseRepositoryDetails(object):
         }
 
     def test_malformed_repository_data(self):
-        pass
-
-
-class TestReadRepositoryDetails(object):
-    @patch("builtins.open", new_callable=mock_open, read_data="")
-    def test_empty_yaml(self, m):
-        assert read_repository_details("some_file") == {}
-
-    @patch("builtins.open", new_callable=mock_open, read_data=yaml_document())
-    def test_valid_yaml(self, m):
-        assert read_repository_details("some_file") == {
-            "repo1": repo_dict1(),
-            "repo2": repo_dict2(),
-        }
-
-    def test_malformed_yaml(self):
         pass
 
 

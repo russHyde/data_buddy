@@ -4,20 +4,9 @@ project, and for cloning them
 """
 
 import argparse
-import yaml
 
+from buddy.file_utils import read_yaml
 from buddy.git_classes import ExternalRepository
-
-
-def read_repository_details(yaml_file):
-    """
-    Reads all data stored in a yaml file; returns a dictionary storing the
-    key-value pairs within the file
-    """
-    yaml_dict = yaml.load(open(yaml_file, "r"))
-    if yaml_dict is None:
-        return {}
-    return yaml_dict
 
 
 def parse_repository_details(yaml_dictionary):
@@ -36,8 +25,9 @@ def import_repository_details(yaml_file):
     """
     Reads and extracts repository information from a yaml file
     """
-    yaml_dict = read_repository_details(yaml_file)
-    return parse_repository_details(yaml_dict)
+    yaml_dict = read_yaml(yaml_file)
+    repositories = parse_repository_details(yaml_dict)
+    return repositories
 
 
 def run_workflow(yaml_file):
