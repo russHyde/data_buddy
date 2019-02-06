@@ -1,6 +1,5 @@
 from buddy.validate_file_contents import parse_validator_details
-
-import pytest
+from buddy.validation_classes import Md5sumValidator
 
 # ----
 
@@ -16,18 +15,23 @@ import pytest
 
 # ----
 
-class TestParseValidatorDetails(object):
 
-    @pytest.mark.skip(reason="parse_validator is not implemented")
+class TestParseValidatorDetails(object):
     def test_md5sum_validators_can_be_parsed(self):
         yaml_dict = {
-            "test1": {"input_file": "some_file", "expect_md5sum": "a" * 32},
-            "test2": {"input_file": "another_file", "expect_md5sum": "b" * 32}
+            "test1": {"input_file": "some_file", "expected_md5sum": "a" * 32},
+            "test2": {"input_file": "another_file", "expected_md5sum": "b" * 32},
+        }
+
+        expected_validators = {
+            "test1": Md5sumValidator(
+                test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+            ),
+            "test2": Md5sumValidator(
+                test_name="test2", input_file="another_file", expected_md5sum="b" * 32
+            ),
         }
         validators = parse_validator_details(yaml_dict)
-        assert all(
-            map(
-                lambda x: isinstance(x, Md5sumValidator),
-                validators.values()
-            )
-        )
+
+        assert all(map(lambda x: isinstance(x, Md5sumValidator), validators.values()))
+        assert validators == expected_validators

@@ -1,5 +1,7 @@
 import argparse
 
+from buddy.validation_classes import Md5sumValidator
+
 
 def parse_validator_details(yaml_dictionary):
     # each test is of the form {test_name: {key1: value1, key2: value2, ...}}
@@ -8,7 +10,16 @@ def parse_validator_details(yaml_dictionary):
 
     # For each validation test in the dictionary, return an object with a
     # `validate` method
-    pass
+    validators = {
+        k: Md5sumValidator(
+            input_file=v["input_file"],
+            test_name=k,
+            expected_md5sum=v["expected_md5sum"],
+        )
+        for k, v in yaml_dictionary.items()
+    }
+
+    return validators
 
 
 def run_workflow(yaml_file):

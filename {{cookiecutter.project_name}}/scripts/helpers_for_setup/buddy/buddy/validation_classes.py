@@ -4,7 +4,6 @@ import sh
 
 
 class Md5sumValidator:
-
     def __init__(self, test_name, input_file, expected_md5sum):
         self.test_name = test_name
         self.input_file = input_file
@@ -12,6 +11,13 @@ class Md5sumValidator:
 
     def is_valid(self):
         return get_md5sum(self.input_file) == self.expected_md5sum
+
+    def __eq__(self, other):
+        return (
+            self.test_name == other.test_name
+            and self.input_file == other.input_file
+            and self.expected_md5sum == other.expected_md5sum
+        )
 
 
 def get_md5sum(filepath):
