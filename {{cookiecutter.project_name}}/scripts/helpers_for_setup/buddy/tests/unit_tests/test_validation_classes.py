@@ -2,12 +2,16 @@ import buddy.validate_file_contents
 
 from buddy.validation_classes import Md5sumValidator
 
+# user
+# .. can ensure the md5sum for a file matches a given value
+#
+
 class TestMd5sumValidatorConstruction(object):
 
     def test_can_construct_md5sum_validator(self):
         validator = Md5sumValidator(
             test_name = "test1", input_file = "some_file",
-            md5_expected = "a" * 32
+            expected_md5sum="a" * 32
         )
         assert isinstance(validator, Md5sumValidator)
 
@@ -24,7 +28,7 @@ class TestMd5sumValidatorMethods(object):
 
         validator = Md5sumValidator(
             test_name = "test1", input_file = "some_file",
-            md5_expected = "a" * 32
+            expected_md5sum="a" * 32
         )
 
         assert validator.is_valid()
@@ -39,7 +43,7 @@ class TestMd5sumValidatorMethods(object):
 
         validator = Md5sumValidator(
             test_name = "test1", input_file = "some_file",
-            md5_expected = "a" * 32
+            expected_md5sum="a" * 32
         )
 
         assert not validator.is_valid()
