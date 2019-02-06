@@ -3,7 +3,7 @@ import sh
 
 from pytest_mock import mocker
 from buddy.git_classes import ExternalRepository, LocalRepository
-from tests.unit_tests.data_for_tests import repo_data1, repo_data2
+from tests.unit_tests.data_for_git_tests import repo_data1, repo_data2
 
 
 class TestExternalRepositoryClass(object):
