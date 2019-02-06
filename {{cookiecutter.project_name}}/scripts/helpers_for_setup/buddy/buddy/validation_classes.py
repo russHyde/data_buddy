@@ -1,4 +1,6 @@
-from buddy.validate_file_contents import get_md5sum
+import sys
+
+import sh
 
 
 class Md5sumValidator:
@@ -10,3 +12,12 @@ class Md5sumValidator:
 
     def is_valid(self):
         return get_md5sum(self.input_file) == self.md5_expected
+
+
+def get_md5sum(filepath):
+    try:
+        md5 = str(sh.md5sum(filepath)).strip().split()[0]
+        return md5
+    except Exception:
+        raise
+        sys.exit(1)

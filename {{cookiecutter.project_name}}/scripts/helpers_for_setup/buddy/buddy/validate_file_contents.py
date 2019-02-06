@@ -1,15 +1,4 @@
 import argparse
-import sh
-import sys
-
-
-def get_md5sum(filepath):
-    try:
-        md5 = str(sh.md5sum(filepath)).strip().split()[0]
-        return md5
-    except Exception:
-        raise
-        sys.exit(1)
 
 
 def parse_validator_details(yaml_dictionary):
