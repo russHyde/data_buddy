@@ -24,6 +24,7 @@ die_and_moan()
 export CONFIG_DIR="./.setup_config"
 export SCRIPT_DIR="./scripts"
 export LIB_DIR="./lib"
+export BIN_DIR="./bin"
 
 export JOB_VARS_FILE="${CONFIG_DIR}/job_specific_vars.sh"
 export CHECK_DIRS_FILE="${CONFIG_DIR}/check_these_dirs.txt"
@@ -36,7 +37,7 @@ export TOUCH_FILES_FILE="${CONFIG_DIR}/touch_these_files.txt"
 export SUBJOBS_FILE="${CONFIG_DIR}/subjob_names.txt"
 
 export SETUP_HELPERS_DIR="${SCRIPT_DIR}/helpers_for_setup"
-export BUDDY_PY="${SETUP_HELPERS_DIR}/buddy"
+export BUDDY_PY="${BIN_DIR}/buddy"
 
 ###############################################################################
 # - Setup / check variable definitions
