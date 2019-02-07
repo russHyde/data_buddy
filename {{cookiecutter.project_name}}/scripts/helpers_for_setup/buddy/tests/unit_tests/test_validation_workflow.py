@@ -1,15 +1,59 @@
+from mock import patch, mock_open
+
+
 import buddy
 
 from buddy.validation_workflow import ValidationWorkflow
 from buddy.validation_classes import Md5sumValidator
 
+# ---- test data
+
+
+def single_md5sum_basics():
+    basics = {
+        "test_name": "my_test",
+        "input_file": "some_file",
+        "expected_md5sum": "a" * 32,
+    }
+    return basics
+
+
+def single_md5sum_yaml_details():
+    basics = single_md5sum_basics()
+    details = {
+        basics["test_name"]: {
+            "input_file": basics["input_file"],
+            "expected_md5sum": basics["expected_md5sum"],
+        }
+    }
+    return details
+
+
+def single_md5sum_yaml_file_contents():
+    basics = single_md5sum_basics()
+    contents = """
+{}:
+    input_file: {}
+    expected_md5sum: {}
+""".format(
+        basics["test_name"], basics["input_file"], basics["expected_md5sum"]
+    )
+    return contents
+
 
 def single_md5sum_validator():
-    return {
-        "my_test": Md5sumValidator(
-            input_file="some_file", test_name="my_test", expected_md5sum="a" * 32
+    basics = single_md5sum_basics()
+    validator_dict = {
+        basics["test_name"]: Md5sumValidator(
+            input_file=basics["input_file"],
+            test_name=basics["test_name"],
+            expected_md5sum=basics["expected_md5sum"],
         )
     }
+    return validator_dict
+
+
+# ---- tests
 
 
 class TestValidationWorkflowConstruction(object):
@@ -30,6 +74,24 @@ class TestValidationWorkflowConstruction(object):
         workflow1 = ValidationWorkflow(validator_dict)
         workflow2 = ValidationWorkflow(validator_dict)
         assert workflow1 == workflow2
+
+
+class TestValidationWorkflowNonstandardConstruction(object):
+    def test_validation_workflow_from_yaml_dictionary(self):
+        yaml_dict = single_md5sum_yaml_details()
+        validator_dict = single_md5sum_validator()
+        workflow = ValidationWorkflow.from_yaml_dict(yaml_dict)
+        assert validator_dict == workflow.validators
+
+    @patch(
+        "builtins.open",
+        new_callable=mock_open,
+        read_data=single_md5sum_yaml_file_contents(),
+    )
+    def test_validation_workflow_from_yaml_file(self, m):
+        workflow = ValidationWorkflow.from_yaml_file("mock_file_name")
+        validator_dict = single_md5sum_validator()
+        assert validator_dict == workflow.validators
 
 
 class TestGetFailingValidators(object):

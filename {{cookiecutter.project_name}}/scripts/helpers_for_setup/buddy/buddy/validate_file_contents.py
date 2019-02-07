@@ -3,8 +3,7 @@ import argparse
 
 def setup_workflow(yaml_file):
     # yaml_dict = read_yaml(yaml_file)
-    # validators = ValidationWorkflow.parse_validator_details(yaml_dict)
-    # workflow = ValidationWorkflow(validators)
+    # workflow = ValidationWorkflow.from_yaml_dict(yaml_dict)
     # return workflow
     pass
 

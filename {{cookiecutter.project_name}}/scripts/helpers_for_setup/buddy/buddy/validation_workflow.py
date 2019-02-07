@@ -1,4 +1,5 @@
 from buddy.validation_classes import Md5sumValidator
+from buddy.file_utils import read_yaml
 
 
 class ValidationWorkflow:
@@ -7,6 +8,35 @@ class ValidationWorkflow:
 
     def __eq__(self, other):
         return self.validators == other.validators
+
+    @classmethod
+    def from_yaml_dict(cls, yaml_dictionary):
+        """
+        User can make a ValidationWorkflow from a dictionary that defines the
+        validation tests to be applied within that Workflow.
+
+        :param yaml_dictionary: A dictionary that defines the validation tests.
+        This should be of the form: {test1: {input_file: ..., expected_md5sum:
+        ...}, test2: {...}, ...}.
+        :return: A ValidationWorkflow object.
+        """
+        return cls(cls.parse_validator_details(yaml_dictionary))
+
+    @classmethod
+    def from_yaml_file(cls, yaml_file):
+        """
+        User can make a ValidationWorkflow from a yaml-file that defines the
+        validation tests to be applied within that Workflow.
+
+        :param yaml_file A file that defines the validation tests.
+        The file should be of the form:
+            test1:
+                input_file: some_file
+                expected_md5sum: some_hash_code
+
+        :return: A ValidationWorkflow object.
+        """
+        return cls.from_yaml_dict(read_yaml(yaml_file))
 
     def get_failing_validators(self):
         return {k: v for k, v in self.validators.items() if not v.is_valid()}
@@ -26,12 +56,19 @@ class ValidationWorkflow:
 
     @staticmethod
     def parse_validator_details(yaml_dictionary):
-        # each test is of the form {test_name: {key1: value1, key2: value2, ...}}
-        # - To compare md5sum between a file and a string, one of the keys should be
-        # `md5sum` and another should be `input_file`
+        """
+        Convert a set of validation-test definitions into a set of Validator
+        objects that can be used to apply those tests.
+        - To compare md5sum between a file and a string, one of the keys must
+        be `expected_md5sum` and another must be `input_file`.
 
-        # For each validation test in the dictionary, return an object with a
-        # `validate` method
+        :param yaml_dictionary: A dictionary that defines a set of validation
+        tests. This should be of the form: {test1: {input_file: ...,
+        expected_md5sum: ...}, test2: {...}, ...}.
+        :return: A dictionary containing, for each validation test in the
+        dictionary, a Validator object.
+        """
+
         validators = {
             k: Md5sumValidator(
                 input_file=v["input_file"],
