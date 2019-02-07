@@ -53,33 +53,32 @@ class TestGetFailingValidators(object):
         assert validator_dict == workflow.get_failing_validators()
 
 
-# class TestValidationReportFormatting(object):
-#
-#     def test_all_passing_means_no_report(self, monkeypatch):
-#         # returns a string
-#         # lines are of form "test_name:XYZ\ttest_type:md5sum\tinput_file:ABC"
-#         def mock_md5sum(filepath):
-#             return "a" * 32
-#
-#         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
-#
-#         validator_dict = single_md5sum_validator()
-#         workflow = ValidationWorkflow(validator_dict)
-#         assert "" == workflow.format_failure_report()
-#
-#
-#     def test_all_failing_gives_report(self, monkeypatch):
-#         def mock_md5sum(filepath):
-#             return "b" * 32
-#
-#         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
-#
-#         validator_dict = single_md5sum_validator()
-#         workflow = ValidationWorkflow(validator_dict)
-#         report = "\t".join([
-#             "test_name:my_test",
-#             "test_type:md5sum",
-#             "input_file:some_file"
-#         ])
-#         assert report == workflow.format_failure_report()
-#
+class TestValidationReportFormatting(object):
+
+    def test_all_passing_means_no_report(self, monkeypatch):
+        # returns a string
+        # lines are of form "test_name:XYZ\ttest_type:md5sum\tinput_file:ABC"
+        def mock_md5sum(filepath):
+            return "a" * 32
+
+        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
+
+        validator_dict = single_md5sum_validator()
+        workflow = ValidationWorkflow(validator_dict)
+        assert "" == workflow.format_failure_report()
+
+    def test_all_failing_gives_report(self, monkeypatch):
+        def mock_md5sum(filepath):
+            return "b" * 32
+
+        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
+
+        validator_dict = single_md5sum_validator()
+        workflow = ValidationWorkflow(validator_dict)
+        report = "\t".join([
+            "test_name:my_test",
+            "test_type:md5sum",
+            "input_file:some_file"
+        ])
+        assert report == workflow.format_failure_report()
+
