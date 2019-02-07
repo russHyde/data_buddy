@@ -1,28 +1,18 @@
 import argparse
 
-from buddy.validation_classes import Md5sumValidator
 
-
-def parse_validator_details(yaml_dictionary):
-    # each test is of the form {test_name: {key1: value1, key2: value2, ...}}
-    # - To compare md5sum between a file and a string, one of the keys should be
-    # `md5sum` and another should be `input_file`
-
-    # For each validation test in the dictionary, return an object with a
-    # `validate` method
-    validators = {
-        k: Md5sumValidator(
-            input_file=v["input_file"],
-            test_name=k,
-            expected_md5sum=v["expected_md5sum"],
-        )
-        for k, v in yaml_dictionary.items()
-    }
-
-    return validators
+def setup_workflow(yaml_file):
+    # yaml_dict = read_yaml(yaml_file)
+    # validators = ValidationWorkflow.parse_validator_details(yaml_dict)
+    # workflow = ValidationWorkflow(validators)
+    # return workflow
+    pass
 
 
 def run_workflow(yaml_file):
+    # workflow = setup_workflow(yaml_file)
+    # report = workflow.get_failure_report()
+    # print(report)
     pass
 
 

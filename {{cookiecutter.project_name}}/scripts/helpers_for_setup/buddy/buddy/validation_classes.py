@@ -8,6 +8,7 @@ class Md5sumValidator:
         self.test_name = test_name
         self.input_file = input_file
         self.expected_md5sum = expected_md5sum
+        self.test_type = "md5sum"
 
     def is_valid(self):
         return get_md5sum(self.input_file) == self.expected_md5sum

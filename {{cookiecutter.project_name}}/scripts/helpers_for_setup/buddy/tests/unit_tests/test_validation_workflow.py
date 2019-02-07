@@ -54,7 +54,6 @@ class TestGetFailingValidators(object):
 
 
 class TestValidationReportFormatting(object):
-
     def test_all_passing_means_no_report(self, monkeypatch):
         # returns a string
         # lines are of form "test_name:XYZ\ttest_type:md5sum\tinput_file:ABC"
@@ -75,10 +74,28 @@ class TestValidationReportFormatting(object):
 
         validator_dict = single_md5sum_validator()
         workflow = ValidationWorkflow(validator_dict)
-        report = "\t".join([
-            "test_name:my_test",
-            "test_type:md5sum",
-            "input_file:some_file"
-        ])
+        report = "\t".join(
+            ["test_name:my_test", "test_type:md5sum", "input_file:some_file"]
+        )
         assert report == workflow.format_failure_report()
 
+
+class TestParseValidatorDetails(object):
+    def test_md5sum_validators_can_be_parsed(self):
+        yaml_dict = {
+            "test1": {"input_file": "some_file", "expected_md5sum": "a" * 32},
+            "test2": {"input_file": "another_file", "expected_md5sum": "b" * 32},
+        }
+
+        expected_validators = {
+            "test1": Md5sumValidator(
+                test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+            ),
+            "test2": Md5sumValidator(
+                test_name="test2", input_file="another_file", expected_md5sum="b" * 32
+            ),
+        }
+        validators = ValidationWorkflow.parse_validator_details(yaml_dict)
+
+        assert all(map(lambda x: isinstance(x, Md5sumValidator), validators.values()))
+        assert validators == expected_validators
