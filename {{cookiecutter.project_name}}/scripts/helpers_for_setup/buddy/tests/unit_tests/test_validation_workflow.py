@@ -25,6 +25,12 @@ class TestValidationWorkflowConstruction(object):
         assert isinstance(workflow, ValidationWorkflow)
         assert validator_dict == workflow.validators
 
+    def test_validation_workflow_equality(self):
+        validator_dict = single_md5sum_validator()
+        workflow1 = ValidationWorkflow(validator_dict)
+        workflow2 = ValidationWorkflow(validator_dict)
+        assert workflow1 == workflow2
+
 
 class TestGetFailingValidators(object):
     def test_no_validators_means_no_failures(self):
