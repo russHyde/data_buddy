@@ -10,7 +10,7 @@ def setup_workflow(yaml_file):
 
 def run_workflow(yaml_file):
     workflow = setup_workflow(yaml_file)
-    report = workflow.get_failure_report()
+    report = workflow.format_failure_report()
     print(report)
 
 
