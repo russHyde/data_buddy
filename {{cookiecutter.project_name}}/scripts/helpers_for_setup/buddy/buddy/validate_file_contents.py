@@ -1,18 +1,17 @@
 import argparse
 
+from buddy.validation_workflow import ValidationWorkflow
+
 
 def setup_workflow(yaml_file):
-    # yaml_dict = read_yaml(yaml_file)
-    # workflow = ValidationWorkflow.from_yaml_dict(yaml_dict)
-    # return workflow
-    pass
+    workflow = ValidationWorkflow.from_yaml_file(yaml_file)
+    return workflow
 
 
 def run_workflow(yaml_file):
-    # workflow = setup_workflow(yaml_file)
-    # report = workflow.get_failure_report()
-    # print(report)
-    pass
+    workflow = setup_workflow(yaml_file)
+    report = workflow.get_failure_report()
+    print(report)
 
 
 def define_command_arg_parser():
@@ -23,6 +22,8 @@ def define_command_arg_parser():
     parser.add_argument("validate_yaml", nargs=1)
     return parser
 
+
+# ---- run as a script
 
 if __name__ == "__main__":
     ARGS = define_command_arg_parser().parse_args()
