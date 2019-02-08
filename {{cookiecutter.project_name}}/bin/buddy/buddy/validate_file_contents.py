@@ -11,7 +11,8 @@ def setup_workflow(yaml_file):
 def run_workflow(yaml_file):
     workflow = setup_workflow(yaml_file)
     report = workflow.format_failure_report()
-    print(report)
+    if report:
+        print(report)
 
 
 def define_command_arg_parser():
