@@ -22,7 +22,11 @@ Activate the project's environment
 
 Set up the filepaths and project-specific packages:
 
-`./scripts/setup.sh`
+`./sidekick setup`
+
+[Optional] If you have set up a set of validation tests for the input data:
+
+`./sidekick validate --yaml <input_validation_tests>.yaml`
 
 Run the snakemake file:
 
@@ -33,3 +37,8 @@ The flags recommended for the current project are as follows:
 <!-- User to update the flags, based on project requirements -->
 
 - No flags recommended
+
+[Optional] If you have set up a set of validation tests for the results file
+(recommended within iterative projects):
+
+`./sidekick validate --yaml <results_validation_tests>.yaml`
