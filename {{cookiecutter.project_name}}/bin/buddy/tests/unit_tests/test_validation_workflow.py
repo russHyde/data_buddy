@@ -143,7 +143,12 @@ class TestValidationReportFormatting(object):
         validator_dict = single_md5sum_validator()
         workflow = ValidationWorkflow(validator_dict)
         report = "\t".join(
-            ["test_name:my_test", "test_type:md5sum", "input_file:some_file"]
+            [
+                "[FAILURE]",
+                "test_name:my_test",
+                "test_type:md5sum",
+                "input_file:some_file",
+            ]
         )
         assert report == workflow.format_failure_report()
 

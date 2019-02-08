@@ -45,6 +45,7 @@ class ValidationWorkflow:
         def format_single_failure(validator):
             return "\t".join(
                 [
+                    "[FAILURE]",
                     "test_name:{}".format(validator.test_name),
                     "test_type:{}".format(validator.test_type),
                     "input_file:{}".format(validator.input_file),
