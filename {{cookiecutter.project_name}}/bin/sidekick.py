@@ -37,7 +37,7 @@ def validate(args):
       files
     """
     validation_script = os.path.join(
-        "scripts", "helpers_for_setup", "buddy", "buddy", "validate_file_contents.py"
+        "bin", "buddy", "buddy", "validate_file_contents.py"
     )
     subprocess.run(["python", validation_script, args.yaml])
 
