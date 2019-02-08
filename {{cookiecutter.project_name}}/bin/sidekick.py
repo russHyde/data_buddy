@@ -39,7 +39,7 @@ def validate(args):
     validation_script = os.path.join(
         "bin", "buddy", "buddy", "validate_file_contents.py"
     )
-    subprocess.run(["python", validation_script, args.yaml])
+    subprocess.run(["python", validation_script] + args.yaml)
 
 
 # ---- parsers
