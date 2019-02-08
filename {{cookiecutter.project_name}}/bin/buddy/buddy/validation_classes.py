@@ -1,5 +1,4 @@
-import sys
-
+import os
 import sh
 
 
@@ -25,6 +24,8 @@ def get_md5sum(filepath):
     try:
         md5 = str(sh.md5sum(filepath)).strip().split()[0]
         return md5
-    except Exception:
-        raise
-        sys.exit(1)
+    except sh.ErrorReturnCode:
+        if isinstance(filepath, str) and not os.path.isfile(filepath):
+            raise FileNotFoundError(filepath)
+        else:
+            raise

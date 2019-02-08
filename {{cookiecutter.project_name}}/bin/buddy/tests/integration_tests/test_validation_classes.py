@@ -25,8 +25,16 @@ class TestMd5sum(object):
             assert get_md5sum(f_non_empty) != empty_string_md5
         pass
 
+    def test_md5sum_fails_for_file_objects(self, tmpdir):
+        # user must provide a file-name, not a file-object
+        with sh.pushd(tmpdir):
+            f0 = open("file_name", mode="w")
+            with pytest.raises(Exception):
+                get_md5sum(f0)
+
     def test_md5sum_for_missing_file(self, tmpdir):
+        # a file should exist for any file-name passed in
         with sh.pushd(tmpdir):
             f0 = "missing_file"
-            with pytest.raises(Exception):
+            with pytest.raises(FileNotFoundError):
                 get_md5sum(f0)
