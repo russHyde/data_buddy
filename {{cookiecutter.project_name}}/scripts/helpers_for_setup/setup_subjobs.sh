@@ -60,13 +60,13 @@ do
   fi
 
   # Change dir into the subjob,
-  #   run the ./scripts/setup.sh for the subjob,
+  #   run the setup scripts for the subjob,
   #   then move back into the original directory.
 
   # Since (...)-wrapping the code runs it in a subshell, we don't need to cd
   #   back into the original directory.
 
-  (cd "${SUBJOB_PATH}" && bash "scripts/setup.sh")
+  (cd "${SUBJOB_PATH}" && ./sidekick setup)
 
 done < "${SUBJOBS_FILE}"
 
