@@ -36,3 +36,13 @@ class TestMd5sum(object):
             f0 = "missing_file"
             with pytest.raises(FileNotFoundError):
                 get_md5sum(f0)
+
+
+class TestMd5sumOnSubsetOfFile(object):
+    def test_comment_only_file_has_empty_md5sum(self, tmpdir):
+        with sh.pushd(tmpdir):
+            f_comment = "comment_file"
+            with open(f_comment, mode="w") as f:
+                print("# comment line", file=f)
+
+            assert get_md5sum(f_comment, comment="#") == empty_md5()

@@ -15,12 +15,39 @@ class TestMd5sumValidatorConstruction(object):
         assert isinstance(validator, Md5sumValidator)
 
 
-class TestMd5sumValidatorMethods(object):
-    def test_is_valid_detects_matching_md5sum(self, monkeypatch):
-        def mock_return(filepath):
-            return "a" * 32
+class TestEqualityOfMd5sumValidators(object):
+    def test_equal_if_all_fields_are_equal(self):
+        validator1 = Md5sumValidator(
+            test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+        )
+        validator2 = Md5sumValidator(
+            test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+        )
+        assert validator1 == validator2
 
-        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_return)
+    def test_not_equal_if_comment_char_differs(self):
+        validator1 = Md5sumValidator(
+            test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+        )
+        validator2 = Md5sumValidator(
+            test_name="test1",
+            input_file="some_file",
+            expected_md5sum="a" * 32,
+            comment="#",
+        )
+        assert validator1 != validator2
+
+
+class TestMd5sumValidatorMethods(object):
+    @staticmethod
+    def mock_return(filepath, comment=None):
+        if comment is None:
+            return "a" * 32
+        else:
+            return "b" * 32
+
+    def test_is_valid_detects_matching_md5sum(self, monkeypatch):
+        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", self.mock_return)
 
         validator = Md5sumValidator(
             test_name="test1", input_file="some_file", expected_md5sum="a" * 32
@@ -29,13 +56,22 @@ class TestMd5sumValidatorMethods(object):
         assert validator.is_valid()
 
     def test_is_valid_detects_nonmatching_md5sum(self, monkeypatch):
-        def mock_return(filepath):
-            return "b" * 32
-
-        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_return)
+        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", self.mock_return)
 
         validator = Md5sumValidator(
-            test_name="test1", input_file="some_file", expected_md5sum="a" * 32
+            test_name="test1", input_file="some_file", expected_md5sum="c" * 32
         )
 
         assert not validator.is_valid()
+
+    def test_stripping_comment_character_affects_md5sum(self, monkeypatch):
+        monkeypatch.setattr(buddy.validation_classes, "get_md5sum", self.mock_return)
+
+        validator = Md5sumValidator(
+            test_name="test1",
+            input_file="some_file",
+            expected_md5sum="b" * 32,
+            comment="#",
+        )
+
+        assert validator.is_valid()

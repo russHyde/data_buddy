@@ -101,7 +101,7 @@ class TestGetFailingValidators(object):
         assert {} == workflow.get_failing_validators()
 
     def test_all_passing_validators_means_no_failures(self, monkeypatch):
-        def mock_md5sum(filepath):
+        def mock_md5sum(filepath, comment=None):
             return "a" * 32
 
         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
@@ -111,7 +111,7 @@ class TestGetFailingValidators(object):
         assert {} == workflow.get_failing_validators()
 
     def test_all_failing_validators(self, monkeypatch):
-        def mock_md5sum(filepath):
+        def mock_md5sum(filepath, comment=None):
             return "b" * 32
 
         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
@@ -125,7 +125,7 @@ class TestValidationReportFormatting(object):
     def test_all_passing_means_no_report(self, monkeypatch):
         # returns a string
         # lines are of form "test_name:XYZ\ttest_type:md5sum\tinput_file:ABC"
-        def mock_md5sum(filepath):
+        def mock_md5sum(filepath, comment=None):
             return "a" * 32
 
         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
@@ -135,7 +135,7 @@ class TestValidationReportFormatting(object):
         assert "" == workflow.format_failure_report()
 
     def test_all_failing_gives_report(self, monkeypatch):
-        def mock_md5sum(filepath):
+        def mock_md5sum(filepath, comment=None):
             return "b" * 32
 
         monkeypatch.setattr(buddy.validation_classes, "get_md5sum", mock_md5sum)
@@ -158,6 +158,11 @@ class TestParseValidatorDetails(object):
         yaml_dict = {
             "test1": {"input_file": "some_file", "expected_md5sum": "a" * 32},
             "test2": {"input_file": "another_file", "expected_md5sum": "b" * 32},
+            "test3": {
+                "input_file": "file_x",
+                "expected_md5sum": "c" * 32,
+                "comment": "#",
+            },
         }
 
         expected_validators = {
@@ -166,6 +171,12 @@ class TestParseValidatorDetails(object):
             ),
             "test2": Md5sumValidator(
                 test_name="test2", input_file="another_file", expected_md5sum="b" * 32
+            ),
+            "test3": Md5sumValidator(
+                test_name="test3",
+                input_file="file_x",
+                expected_md5sum="c" * 32,
+                comment="#",
             ),
         }
         validators = ValidationWorkflow.parse_validator_details(yaml_dict)
