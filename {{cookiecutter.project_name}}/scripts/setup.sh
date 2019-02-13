@@ -109,8 +109,15 @@ bash ${ENVS_SCRIPT} ${ENVNAME}
 # TODO: ensure files in BUDDY_PY are newer than ${CONDA_PREFIX}/lib/buddy
 #
 if $(conda list | grep -qe "^buddy\\b"); then
-  echo "'buddy' has already been installed" >&2
+  echo "${0}: 'buddy' has already been installed" >&2
 else
+  if [[ ! -d "${BUDDY_PY}" ]]
+  then
+    die_and_moan \
+    "${0}: ${BUDDY_PY} is not a directory: \
+    \n ... Cannot install the project-setup helper scripts"
+  fi
+
   pip install -e "${BUDDY_PY}"
 fi
 

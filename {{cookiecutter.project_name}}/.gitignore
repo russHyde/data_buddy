@@ -2,6 +2,10 @@
 
 **/lib/cloned_packages
 
+# Job-specific package
+
+lib/{{cookiecutter.r_pkg_name}}
+
 # Data files / directories
 
 data
@@ -14,6 +18,8 @@ results
 man
 doc/figure
 
+*.docx
+*.pptx
 *.pdf
 *.png
 *.html

@@ -43,57 +43,63 @@ die_and_moan()
 if [[ -z "${CHECK_DIRS_FILE}" ]] || [[ ! -f "${CHECK_DIRS_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export CHECK_DIRS_FILE, a file(name) \
-  \n ... containing directories that must exist before running the \
-  \n ... workflow"
+  "${0}: \
+  \n ... User should define/export CHECK_DIRS_FILE, a file(name) \
+  \n ... containing directories that must exist before running the workflow"
 fi
 
 if [[ -z "${MAKE_DIRS_FILE}" ]] || [[ ! -f "${MAKE_DIRS_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export MAKE_DIRS_FILE, a file(name) \
-  \n ... containing directory locations that should exist after \
-  \n ... running 'setup_dirs.sh'"
+  "${0}: \
+  \n ... User should define/export MAKE_DIRS_FILE, a file(name) \
+  \n ... containing directory locations that should exist after running \
+  \n ... 'setup_dirs.sh'"
 fi
 
 if [[ -z "${MAKE_LINKS_FILE}" ]] || [[ ! -f "${MAKE_LINKS_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export MAKE_LINKS_FILE, a file(name) \
-  \n ... containing 'target_file\tlink_name' entries for links that \
-  \n ... should exist after running 'setup_dirs.sh'"
+  "${0}: \
+  \n ... User should define/export MAKE_LINKS_FILE, a file(name) \
+  \n ... containing 'target_file\tlink_name' entries for links that should \
+  \n ... exist after running 'setup_dirs.sh'"
 fi
 
 if [[ -z "${MAKE_FILE_COPIES_FILE}" ]] || \
   [[ ! -f "${MAKE_FILE_COPIES_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export MAKE_FILE_COPIES_FILE, a file(name) \
-  \n ... containing 'original_file\tcopy_name' entries for links that \
-  \n ... should exist after running 'setup_dirs.sh'"
+  "${0}: \
+  \n ... User should define/export MAKE_FILE_COPIES_FILE, a file(name) \
+  \n ... containing 'original_file\tcopy_name' entries for links that should \
+  \n ... exist after running 'setup_dirs.sh'"
 fi
 
 if [[ -z "${MAKE_DIR_COPIES_FILE}" ]] || \
   [[ ! -f "${MAKE_DIR_COPIES_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export MAKE_DIR_COPIES_FILE, a file(name) \
-  \n ... containing 'original_dir\tcopy_name' entries for links that \
-  \n ... should exist after running 'setup_dirs.sh'"
+  "${0}: \
+  \n ... User should define/export MAKE_DIR_COPIES_FILE, a file(name) \
+  \n ... containing 'original_dir\tcopy_name' entries for links that should \
+  \n ... exist after running 'setup_dirs.sh'"
 fi
 
 if [[ -z "${TOUCH_FILES_FILE}" ]] || [[ ! -f "${TOUCH_FILES_FILE}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export TOUCH_FILES_FILE, a file(name) \
-  \n ... containing a list of filenames that should be constructed \
-  \n ... (even if empty) after running 'setup_dirs.sh'"
+  "${0}: \
+  \n ... User should define/export TOUCH_FILES_FILE, a file(name) \
+  \n ... containing a list of filenames that should be constructed (even if
+  \n ... empty) after running 'setup_dirs.sh'"
 fi
 
 if [[ -z "${REPO_CLONING_CONFIG}" ]] || [[ ! -f "${REPO_CLONING_CONFIG}" ]];
 then
   die_and_moan \
-  "${0}: User should define/export REPO_CLONING_CONFIG, a yaml file \
+  "${0}: \
+  \n ... User should define/export REPO_CLONING_CONFIG, a yaml file \
   \n ... defining any git repositories (and specific commits therein) that
   \n ... should be cloned and added to the current project"
 fi
