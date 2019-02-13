@@ -71,12 +71,7 @@ class ValidationWorkflow:
         """
 
         validators = {
-            k: Md5sumValidator(
-                input_file=v["input_file"],
-                test_name=k,
-                expected_md5sum=v["expected_md5sum"],
-            )
-            for k, v in yaml_dictionary.items()
+            k: Md5sumValidator(test_name=k, **v) for k, v in yaml_dictionary.items()
         }
 
         return validators
