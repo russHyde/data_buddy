@@ -90,18 +90,19 @@ then
 fi
 
 ###############################################################################
-# - Ensure that <ENVNAME> is the name of the current env and that python /
-# Rscript are ran from $CONDA/envs/$ENVNAME/bin/
-#
-ENVS_SCRIPT="${SETUP_HELPERS_DIR}/check_env.sh"
-if [[ ! -f "${ENVS_SCRIPT}" ]]
-then
-  die_and_moan \
-  "${0}: ${ENVS_SCRIPT} is not a file: \
-  \n ... Cannot check that the ${ENVNAME} environment has been activated"
-fi
+# - Ensure that <ENVNAME> is the name of the current env
 
-bash ${ENVS_SCRIPT} ${ENVNAME}
+if [[ -z "${CONDA_PREFIX}" ]] || \
+   [[ -z "${CONDA_DEFAULT_ENV}" ]]; then
+  die_and_moan \
+  "${0}: CONDA_PREFIX or CONDA_DEFAULT_ENV are undefined \
+  \n -- perhaps you haven't activated the work-package's conda env?"
+  fi
+
+if [[ "${ENVNAME}" != "${CONDA_DEFAULT_ENV}" ]]; then
+  die_and_moan \
+  "${0}: conda env ${ENVNAME} is not activated"
+  fi
 
 ###############################################################################
 # - If the `buddy` python package has not previously been installed, install it
@@ -120,6 +121,19 @@ else
 
   pip install -e "${BUDDY_PY}"
 fi
+
+###############################################################################
+# - Ensure that python / Rscript are ran from $CONDA_PREFIX/bin/
+
+ENVS_SCRIPT="${SETUP_HELPERS_DIR}/check_env.sh"
+if [[ ! -f "${ENVS_SCRIPT}" ]]
+then
+  die_and_moan \
+  "${0}: ${ENVS_SCRIPT} is not a file: \
+  \n ... Cannot check that the ${ENVNAME} environment has been activated"
+fi
+
+bash ${ENVS_SCRIPT} ${ENVNAME}
 
 ###############################################################################
 # If the current project uses R within jupyter:
