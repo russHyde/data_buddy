@@ -25,7 +25,10 @@ def setup(args):
     - Builds and installs any required packages
     - Then does this recursively for any subprojects
     """
-    subprocess.run(["./scripts/setup.sh"])
+    try:
+        subprocess.run(["./scripts/setup.sh"], check=True)
+    except:
+        raise
 
 
 def validate(args):
