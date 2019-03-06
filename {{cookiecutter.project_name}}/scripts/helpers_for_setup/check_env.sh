@@ -3,19 +3,8 @@ set -e
 set -o pipefail
 
 ###############################################################################
-# 5 / 12/ 2016
-# Requires that (CONDA_DIR and CONDA_ENV_DIR)  or (CONDA_DIR and JOBNAME) are
-#   defined and exported
-# Requires that IS_R_REQUIRED is defined
-# <TODO>: IS_JUPYTER_REQUIRED
-#
-# If CONDA_ENV_DIR is not defined, it is assumed to be
-#   ${CONDA_DIR}/envs/${JOBNAME}
-#
-# Checks if the active python dist is called from ${CONDA_ENV_DIR}/python
-#
 # If IS_R_REQUIRED is non-zero, checks that the active Rscript is called from
-#   the CONDA_ENV_DIR as well
+#   the current conda env
 
 ###############################################################################
 
@@ -29,23 +18,6 @@ die_and_moan()
 
 # Name of the conda environment that should be activated for this work-job:
 REQD_CONDA_ENV="$1"
-
-if [[ -z "${REQD_CONDA_ENV}" ]]; then
-  die_and_moan \
-  "${0}: call `./path/to/check_env.sh NAME_OF_EXPECTED_CONDA_ENV` next time"
-  fi
-
-if [[ -z "${CONDA_PREFIX}" ]] || \
-   [[ -z "${CONDA_DEFAULT_ENV}" ]]; then
-  die_and_moan \
-  "${0}: CONDA_PREFIX or CONDA_DEFAULT are undefined \
-  \n -- perhaps you haven't activated the work-package's conda env?"
-  fi
-
-if [[ "${REQD_CONDA_ENV}" != "${CONDA_DEFAULT_ENV}" ]]; then
-  die_and_moan \
-  "${0}: REQD_CONDA_ENV ${REQD_CONDA_ENV} is not activated"
-  fi
 
 ###############################################################################
 # Check that the conda environment for the current workjob is activated
