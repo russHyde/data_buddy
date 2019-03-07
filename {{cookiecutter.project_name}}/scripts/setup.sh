@@ -125,15 +125,7 @@ fi
 ###############################################################################
 # - Ensure that python / Rscript are ran from $CONDA_PREFIX/bin/
 
-ENVS_SCRIPT="${SETUP_HELPERS_DIR}/check_env.sh"
-if [[ ! -f "${ENVS_SCRIPT}" ]]
-then
-  die_and_moan \
-  "${0}: ${ENVS_SCRIPT} is not a file: \
-  \n ... Cannot check that the ${ENVNAME} environment has been activated"
-fi
-
-bash ${ENVS_SCRIPT} ${ENVNAME}
+python "${BUDDY_PY}/buddy/validate_env_contents.py" "${CONDA_PREFIX}" "${IS_R_REQUIRED}"
 
 ###############################################################################
 # If the current project uses R within jupyter:
