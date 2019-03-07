@@ -14,6 +14,8 @@ data
 
 # Computed files
 
+**/lib/built_packages
+
 results
 man
 doc/figure
