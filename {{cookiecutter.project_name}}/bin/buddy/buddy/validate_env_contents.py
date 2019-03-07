@@ -71,15 +71,15 @@ def run_workflow(conda_prefix, is_r_required):
     :param is_r_required: Should the conda environment contain R?
     :type is_r_required: bool
     """
-    assert conda_env_is_activated(), "project should be running in a conda environment"
+    assert conda_env_is_activated(), "project should be running in a `conda` environment"
     assert conda_env_matches_expected(
         conda_prefix
-    ), "path to the conda environment should be {}".format(conda_prefix)
-    assert python_matches_conda(), "`python` should be present in the conda environment"
+    ), "path to the `conda` environment should be `{}`".format(conda_prefix)
+    assert python_matches_conda(), "`python` should be present in the `conda` environment"
     if is_r_required:
         assert (
             rscript_matches_conda()
-        ), "`Rscript` should be present in the conda environment"
+        ), "`Rscript` should be present in the `conda` environment"
 
 
 if __name__ == "__main__":
