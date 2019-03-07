@@ -54,7 +54,7 @@ export BUDDY_PY="${BIN_DIR}/buddy"
 if [[ ! -f "${JOB_VARS_FILE}" ]];
 then
   die_and_moan \
-  "${0}: File ${JOB_VARS_FILE} should be defined"
+  "${0}: File '${JOB_VARS_FILE}' should be defined"
 fi
 
 source "${JOB_VARS_FILE}"
@@ -62,14 +62,14 @@ source "${JOB_VARS_FILE}"
 if [[ -z "${JOBNAME}" ]];
 then
   die_and_moan \
-  "${0}: Variable JOBNAME should be defined in ${JOB_VARS_FILE}"
+  "${0}: Variable 'JOBNAME' should be defined in '${JOB_VARS_FILE}'"
 fi
 
 if [[ -z "${ENVNAME}" ]];
 then
   die_and_moan \
-  "${0}: Variable ENVNAME (giving the name of the CONDA environment for \
-  \n ... the current job) should be defined in ${JOB_VARS_FILE}"
+  "${0}: Variable 'ENVNAME' (giving the name of the 'conda' environment for \
+  \n ... the current job) should be defined in '${JOB_VARS_FILE}'"
 fi
 
 if [[ -z "${IS_R_REQUIRED}" ]] && \
@@ -77,7 +77,7 @@ if [[ -z "${IS_R_REQUIRED}" ]] && \
    [[ ${IS_R_REQUIRED} -ne 1 ]];
 then
   die_and_moan \
-  "${0}: Binary variable IS_R_REQUIRED should be defined in ${JOB_VARS_FILE}"
+  "${0}: Binary variable 'IS_R_REQUIRED' should be defined in '${JOB_VARS_FILE}'"
 fi
 
 ###############################################################################
@@ -86,7 +86,7 @@ fi
 if [[ "${OSTYPE}" != "linux-gnu" ]];
 then
   die_and_moan \
-  "${0}: OSTYPE should be linux-gnu"
+  "${0}: 'OSTYPE' should be 'linux-gnu'"
 fi
 
 ###############################################################################
@@ -95,13 +95,13 @@ fi
 if [[ -z "${CONDA_PREFIX}" ]] || \
    [[ -z "${CONDA_DEFAULT_ENV}" ]]; then
   die_and_moan \
-  "${0}: CONDA_PREFIX or CONDA_DEFAULT_ENV are undefined \
-  \n -- perhaps you haven't activated the work-package's conda env?"
+  "${0}: 'CONDA_PREFIX' or 'CONDA_DEFAULT_ENV' are undefined \
+  \n -- perhaps you haven't activated the work-package's 'conda' env?"
   fi
 
 if [[ "${ENVNAME}" != "${CONDA_DEFAULT_ENV}" ]]; then
   die_and_moan \
-  "${0}: conda env ${ENVNAME} is not activated"
+  "${0}: 'conda' env '${ENVNAME}' is not activated"
   fi
 
 ###############################################################################
@@ -115,7 +115,7 @@ else
   if [[ ! -d "${BUDDY_PY}" ]]
   then
     die_and_moan \
-    "${0}: ${BUDDY_PY} is not a directory: \
+    "${0}: '${BUDDY_PY}' is not a directory: \
     \n ... Cannot install the project-setup helper scripts"
   fi
 
@@ -137,7 +137,7 @@ then
   if [[ -z "${R_KERNEL}" ]];
   then
     die_and_moan \
-    "${0}: R_KERNEL name should be defined in ${JOB_VARS_FILE}"
+    "${0}: 'R_KERNEL' name should be defined in '${JOB_VARS_FILE}'"
   fi
   # check if the current kernel name is present in the list of available
   #  r-kernels for jupyter:
@@ -172,7 +172,7 @@ DIRS_SCRIPT="${SETUP_HELPERS_DIR}/setup_dirs.sh"
 if [[ ! -f "${DIRS_SCRIPT}" ]];
 then
   die_and_moan \
-  "${0}: ${DIRS_SCRIPT} should exist"
+  "${0}: '${DIRS_SCRIPT}' should exist"
 fi
 
 bash ${DIRS_SCRIPT}
@@ -184,7 +184,7 @@ PKGS_SCRIPT="${SETUP_HELPERS_DIR}/setup_libs.sh"
 if [[ ! -f "${PKGS_SCRIPT}" ]];
 then
   die_and_moan \
-  "${0}: ${PKGS_SCRIPT} should exist"
+  "${0}: '${PKGS_SCRIPT}' should exist"
 fi
 
 bash ${PKGS_SCRIPT}
