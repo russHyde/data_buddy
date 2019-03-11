@@ -6,11 +6,12 @@
 
 lib/{{cookiecutter.r_pkg_name}}
 
-# Data files / directories
+# Data files / directories / archives
 
 data
 .RData
-*.tar.gz
+*.gz
+*.zip
 
 # Computed files
 
