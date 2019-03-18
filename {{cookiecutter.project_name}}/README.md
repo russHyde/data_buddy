@@ -18,7 +18,7 @@ If necessary, create the conda environment for the main project:
 
 Activate the project's environment
 
-`source activate {{cookiecutter.conda_env}}`
+`conda activate {{cookiecutter.conda_env}}`
 
 Set up the filepaths and project-specific packages:
 
