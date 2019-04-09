@@ -189,13 +189,13 @@ do
   #
   # Links are made with filepaths that are relative to the dir in which the
   # link is placed. But the target of the link is described in
-  # ./.setup_config/make_these_links.txt relative to the working directory for
-  # this project.
+  # ./.sidekick/setup/make_these_links.txt relative to the working directory
+  # for this project.
   #
-  # So if ~/abc/def/.setup_config/some.link has target ~/abc/some.target and
+  # So if ~/abc/def/.sidekick/setup/some.link has target ~/abc/some.target and
   # the working directory is ~/abc/def, then make_these_links.txt will contain
-  # the target ../some.target and linkname ./.setup_config/some.link, but after
-  # making the link, ./.setup_config will look like "some.link ->
+  # the target ../some.target and linkname ./.sidekick/setup/some.link, but
+  # after making the link, ./.sidekick/setup will look like "some.link ->
   # ../../some.target".
   #
   # Consequently, when checking whether an existing link points to the intended

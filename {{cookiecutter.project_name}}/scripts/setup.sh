@@ -21,7 +21,7 @@ die_and_moan()
 # this script.
 # - They will typically be initialised using `cookiecutter`
 
-export CONFIG_DIR="./.setup_config"
+export CONFIG_DIR="./.sidekick/setup"
 export SCRIPT_DIR="./scripts"
 export LIB_DIR="./lib"
 export BIN_DIR="./bin"
@@ -41,8 +41,8 @@ export BUDDY_PY="${BIN_DIR}/buddy"
 
 ###############################################################################
 # - Setup / check variable definitions
-#   - The file `./.setup_config/job_specific_vars.sh` should exist and contain
-#   the definitions of all job-specific variables;
+#   - The file `./.sidekick/setup/job_specific_vars.sh` should exist and
+#   contain the definitions of all job-specific variables;
 #   - All setup-related files require that `JOBNAME`, `ENVNAME` and
 #   `IS_R_REQUIRED` are defined;
 #   - If `IS_R_PKG_REQUIRED` is 1, `PKGNAME` should be defined;
