@@ -122,6 +122,7 @@ built_packages/${pkgname}_0.0.0.9000.tar.gz: \
 	Rscript -e 'library(devtools); library(methods);' \
                 -e 'setwd("${pkgname}");' \
                 -e 'document();' \
+                -e 'dir.create("../built_packages", showWarnings = FALSE);' \
                 -e 'devtools::build(path = "../built_packages")'
 
 ###############################################################################
