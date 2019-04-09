@@ -57,13 +57,30 @@ def add_setup_subparser(subparsers):
     setup_parser.set_defaults(func=setup)
 
 
+import textwrap
+
 def add_validation_subparser(subparsers):
     """
     Add a parser for `./sidekick validate` arguments.
     """
-    validation_parser = subparsers.add_parser("validate")
+    validation_parser = subparsers.add_parser(
+        "validate",
+        description=\
+            textwrap.dedent("""\
+            Compare the contents of a set of files against some expected
+            values. Expectations provided in yaml format, for example:
+
+                # some-comment
+                test_name_X:
+                    input_file: compare_the_md5sum_for_this_file
+                    expected_md5sum: against_this_hashcode
+            """),
+        formatter_class=argparse.RawTextHelpFormatter)
     validation_parser.set_defaults(func=validate)
-    validation_parser.add_argument("--yaml", type=str, nargs=1, required=True)
+    validation_parser.add_argument(
+        "yaml", type=str, nargs=1,
+        help="yaml file containing the validation tests"
+    )
 
 
 def define_parser():
