@@ -5,11 +5,10 @@ set -o pipefail
 
 
 ###############################################################################
-# 18 / 1 / 2017
 # Script to setup R package for use in the current project
 #
 # Assumes that all RH-generated R function scripts have been put in
-#   subdirectories of ./lib/global_rfuncs or ./lib/local_rfuncs
+#   subdirectories of ${LIB_DIR}/global_rfuncs or ${LIB_DIR}/local_rfuncs
 #   and that if the R/ subdirectory of both of these dirs is empty, then
 #   this script aborts, since there is no R package to build if there is no
 #   source code for that package
@@ -19,11 +18,11 @@ set -o pipefail
 #     script to build an R package
 #   - TODO - ? considerations for building python package structures
 #
-# Checks that ./lib/Makefile and ./lib/setup.DESCRIPTION.R exist and assumes
-#   they take arguments 'jobname' and 'r_includes'
+# Checks that ${LIB_DIR}/Makefile and ${LIB_DIR}/setup.DESCRIPTION.R exist and
+#   assumes they take arguments 'jobname' and 'r_includes'
 #
 # If the file does not already exist, this script will make the empty file
-#   ./lib/conf/include_these_rpackages.txt
+#   ${LIB_DIR}/conf/include_these_rpackages.txt
 #   but if it already exists then the file is used as a list of imported
 #   packages
 #   - if this file is empty, it is assumed that the job-specific package does
@@ -44,6 +43,7 @@ function build_r_package {
   JNAME="${1}"
   PNAME="${2}"
   R_INC="${3}"
+  LIB_DIR="${4}"
   # Check that r_includes is an absolute path to an existing file
   if [[ "${R_INC:0:1}" != "/" ]] && \
      [[ "${R_INC:0:2}" != "~" ]] && \
@@ -53,16 +53,16 @@ function build_r_package {
     "${0}: Path to R_INCLUDES should be absolute in setup_libs.sh"
   fi
 
-  # Check that ./lib/Makefile exists
-  # - Any other requirements of ./lib/Makefile should be checked by itself
-  if [[ ! -f ./lib/Makefile ]];
+  # Check that ${LIB_DIR}/Makefile exists
+  # - Any other requirements of ${LIB_DIR}/Makefile should be checked by itself
+  if [[ ! -f "${LIB_DIR}/Makefile" ]];
   then
     die_and_moan \
     "${0}: Makefile for building the libraries/packages for this job is \
-    \n ... missing from ./lib"
+    \n ... missing from lib-dir: ${LIB_DIR}"
   fi
 
-  cd ./lib
+  cd "${LIB_DIR}"
   make pkgname="${PNAME}" \
        r_includes="${R_INC}"
   cd ..
@@ -132,10 +132,11 @@ fi
 # Call the function for setting up the R package if:
 #   - IS_R_REQUIRED;
 #   - IS_R_PKG_REQUIRED
-#   - and there are some .R scripts in ./lib/local_rfuncs/R or
-#   ./lib/global_rfuncs/R;
-#   - and a Makefile is found in ./lib (checked in build_r_package)
-#   - and a "setup.DESCRIPTION.R" file is found in ./lib (checked in Makefile)
+#   - and there are some .R scripts in ${LIB_DIR}/local_rfuncs/R or
+#   ${LIB_DIR}/global_rfuncs/R;
+#   - and a Makefile is found in ${LIB_DIR} (checked in build_r_package)
+#   - and a "setup.DESCRIPTION.R" file is found in ${LIB_DIR} (checked in
+#   Makefile)
 #   - and the global vars JOBNAME and PKGNAME are defined (checked above)
 
 # Call the function for installing the R package if additionally:
@@ -148,7 +149,7 @@ then
   # the job-specific pacakge
   if [[ -z "${R_INCLUDES_FILE}" ]];
   then
-    R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
+    R_INCLUDES_FILE="${LIB_DIR}/conf/include_into_rpackage.txt"
     export R_INCLUDES_FILE
   fi
 
@@ -156,7 +157,8 @@ then
   #   lib/local_rfuncs/R/*.R for packaging up
   #   - The global files should have been copied in by setup_dirs.sh based on
   #     ./.sidekick/setup/copy_these_files.txt (or cloned from bitbucket)
-  R_FUNCTION_FILES=(`find ./lib/*_rfuncs/R/ -type f -name "*.R"`)
+  R_FUNCTION_FILES=(`find "${LIB_DIR}/*_rfuncs/R/" -type f -name "*.R"`)
+
   {% raw -%}
   NUM_R_FILES=${#R_FUNCTION_FILES[@]}
   {%- endraw %}
@@ -164,26 +166,42 @@ then
   # Build/install the package if there are any files to package up and the
   # scripts required for packaging exist
   #   -
-  # All built packages should be placed into ./lib/built_packages/
+  # All built packages should be placed into ${LIB_DIR}/built_packages/
   # and are installed from this directory
   if [[ ${NUM_R_FILES} > 0 ]];
   then
-    build_r_package "${JOBNAME}" "${PKGNAME}" "${R_INCLUDES_FILE}"
+    build_r_package \
+      "${JOBNAME}" \
+      "${PKGNAME}" \
+      "${R_INCLUDES_FILE}" \
+      "${LIB_DIR}"
   fi
 fi
 
 # Where I've copied one of my own packages into the source code for a package,
-#   build that package and put the package-archive into ./lib/built_packages
+#   build that package and put the package-archive into
+#   ${LIB_DIR}/built_packages
 #
-if [[ -d "./lib/copied_packages" ]] || [[ -d "./lib/cloned_packages" ]]; then
+if [[ -d "${LIB_DIR}/copied_packages" ]] || \
+   [[ -d "${LIB_DIR}/cloned_packages" ]];
+then
   for PKG_PATH in \
-    $(find "lib/cloned_packages" -maxdepth 1 -mindepth 1 -type d) \
-    $(find "lib/copied_packages" -maxdepth 1 -mindepth 1 -type d);
+    $(find "${LIB_DIR}/cloned_packages" -maxdepth 1 -mindepth 1 -type d) \
+    $(find "${LIB_DIR}/copied_packages" -maxdepth 1 -mindepth 1 -type d);
   do
+
+    R_BUILDER_SCRIPT="${SETUP_HELPERS_DIR}/package_builder.R"
+    if [[ ! -f "${R_BUILDER_SCRIPT}" ]]; then
+      die_and_moan \
+        "${0}: the R-package building script ${R_BUILDER_SCRIPT} is missing"
+    fi
+
+    mkdir -p "${LIB_PATH}/built_packages"
+
     Rscript \
-      ./scripts/helpers_for_setup/package_builder.R \
+      "${R_BUILDER_SCRIPT}" \
       "${PKG_PATH}" \
-      "./lib/built_packages"
+      "${LIB_DIR}/built_packages"
   done
 fi
 
@@ -191,15 +209,16 @@ fi
 
 # Install any of the packages that were copied into the current R environment
 #
-if [[ -d "./lib/built_packages" ]]; then
+if [[ -d "${LIB_DIR}/built_packages" ]];
+then
   for PKG_TAR in \
-    $(find "lib/built_packages" -name "*.tar.gz");
+    $(find "${LIB_DIR}/built_packages" -name "*.tar.gz");
   do
     # The R library directory for the current conda environment is:
     R_LIB_DIR="${CONDA_PREFIX}/lib/R/library"
 
     # The package archives are like
-    #   ./lib/built_packages/pkgname_0.1.2.333.tar.gz
+    #   ${LIB_DIR}/built_packages/pkgname_0.1.2.333.tar.gz
     PKGNAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
 
     # Install the R package if it is newer than the installed R package
