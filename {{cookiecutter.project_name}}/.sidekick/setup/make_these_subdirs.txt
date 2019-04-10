@@ -12,6 +12,7 @@
 # ./temp
 
 # Defaults for a new project/subproject:
+./conf
 ./data
 ./data/ext
 ./data/int
