@@ -196,7 +196,7 @@ then
         "${0}: the R-package building script ${R_BUILDER_SCRIPT} is missing"
     fi
 
-    mkdir -p "${LIB_PATH}/built_packages"
+    mkdir -p "${LIB_DIR}/built_packages"
 
     Rscript \
       "${R_BUILDER_SCRIPT}" \
