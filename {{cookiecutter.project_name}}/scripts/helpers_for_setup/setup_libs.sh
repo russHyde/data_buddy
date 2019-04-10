@@ -156,8 +156,9 @@ then
   # Determine if there are any function scripts in lib/global_rfuncs/R/*.R or
   #   lib/local_rfuncs/R/*.R for packaging up
   #   - The global files should have been copied in by setup_dirs.sh based on
-  #     ./.setup_config/copy_these_files.txt (or cloned from bitbucket)
+  #     ./.sidekick/setup/copy_these_files.txt (or cloned from bitbucket)
   R_FUNCTION_FILES=(`find "${LIB_DIR}/*_rfuncs/R/" -type f -name "*.R"`)
+
   {% raw -%}
   NUM_R_FILES=${#R_FUNCTION_FILES[@]}
   {%- endraw %}
