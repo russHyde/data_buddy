@@ -127,12 +127,30 @@ done < "${CHECK_DIRS_FILE}"
 
 ###############################################################################
 # We set up links and their containing directories before setting up all other
-# job-specific directories, since many subdirectories of ./data/job will be
-# created for outputting alignments etc and ./data/job is a link to ~/job_data.
+# job-specific directories.
 #
-# Similarly, we set up ./data/ext and ./data/int aslinks to ~/ext_data and
-# ~/int_data; nonetheless, this job should not be able to make subdirectories
-# or files within ~/ext_data and ~/int_data
+# A typical project will contain three main data directories:
+# - ./data/ext : for accessing externally-obtained datasets
+# - ./data/int : for accessing internally-generated datasets
+# - ./data/job : for storing all data generated during the run of the current
+#   project (including temporary / intermediate files; but excluding those
+#   small files that are to be passed to collaborators - the latter should go
+#   in ./results)
+#
+# For a given project, these directories are setup as links, so that data and
+# code can be separated on the file-system. For example, `./data/job` might be
+# a link to some distant location. These links are specified in
+# `.sidekick/setup/make_these_links.txt`. The links are setup before any
+# directories are made, since the newly-created directories for a project may be
+# subdirs of the link targets.
+#
+# Typically:
+# - `./data/job` links to some subdirectory of `../job_data`;
+# - `../job_data` is a link to a location that is specific to a given user's
+# computer (the latter can't be set by this project's setup scripts since it
+# lies outwith the project's directory structure and will differ for different
+# users)
+# - and similarly for `./data/ext` and `./data/int`
 #
 # For links:
 # - ignore blank lines
