@@ -116,15 +116,14 @@ function install_r_package {
 # Determine the R-LIBS directory for the current conda environment
 
 if [[ -z "${JOBNAME}" ]] || \
-   [[ -z "${PKGNAME}" ]] || \
    [[ -z "${IS_R_REQUIRED}" ]] || \
    [[ -z "${IS_R_PKG_REQUIRED}" ]] || \
    [[ -z "${CONDA_PREFIX}" ]];
 then
   die_and_moan \
-  "${0}: JOBNAME, PKGNAME, IS_R_REQUIRED, IS_R_PKG_REQUIRED and CONDA_PREFIX \
-  \n ... should be defined, CONDA_PREFIX is usually set up by the anaconda \
-  \n ... environment, setup_libs.R should have been called from setup.sh."
+  "${0}: JOBNAME, IS_R_REQUIRED, IS_R_PKG_REQUIRED and CONDA_PREFIX should be \
+  \n ... defined, CONDA_PREFIX is usually set up by the anaconda environment \
+  \n ... `setup_libs.R` should have been called from `setup.sh`."
 fi
 
 ###############################################################################
@@ -145,6 +144,13 @@ fi
 
 if [[ ${IS_R_REQUIRED} -ne 0 ]] && [[ ${IS_R_PKG_REQUIRED} -ne 0 ]];
 then
+  if [[ -z "${PKGNAME}" ]];
+  then
+    die_and_moan \
+    "${0}: PKGNAME should be defined, since IS_R_PKG_REQUIRED is true for this \
+    \n ... project"
+  fi
+
   # Set default val for the file that specifies which packages to include in
   # the job-specific pacakge
   if [[ -z "${R_INCLUDES_FILE}" ]];
@@ -219,10 +225,10 @@ then
 
     # The package archives are like
     #   ${LIB_DIR}/built_packages/pkgname_0.1.2.333.tar.gz
-    PKGNAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
+    LOCAL_PKGNAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
 
     # Install the R package if it is newer than the installed R package
-    install_r_package "${PKGNAME}" "${PKG_TAR}" "${R_LIB_DIR}"
+    install_r_package "${LOCAL_PKGNAME}" "${PKG_TAR}" "${R_LIB_DIR}"
   done
 fi
 
