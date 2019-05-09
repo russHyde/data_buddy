@@ -1,3 +1,11 @@
+"""
+Given a file-path to a .yaml file, this script will check
+whether every string in the .yaml file corresponds to a
+directory that exists (with respect to the current working
+directory)
+"""
+
+import argparse
 import errno
 import os
 import os.path
@@ -14,16 +22,17 @@ def run_workflow(yaml_path):
     :return:
     """
     dirs = read_yaml(yaml_path)
-    for d in dirs:
-        if not os.path.isdir(d):
+    for current_dir in dirs:
+        if not os.path.isdir(current_dir):
             raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), d
+                errno.ENOENT, os.strerror(errno.ENOENT), current_dir
             )
 
 
 def define_command_arg_parser():
     """
-    Get a parser that extracts the command args used when calling this program
+    Get a parser that extracts the command args used when calling this
+    program
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("required_dirs_yaml", nargs=1)

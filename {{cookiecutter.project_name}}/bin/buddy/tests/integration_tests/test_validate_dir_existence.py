@@ -9,7 +9,6 @@ from buddy.validate_dir_existence import run_workflow
 
 
 class TestDirExistence(object):
-
     def test_with_existing_dir(self, tmpdir, mocker):
         yaml = dedent(
             """
