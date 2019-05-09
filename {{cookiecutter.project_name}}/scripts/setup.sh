@@ -81,12 +81,12 @@ then
 fi
 
 ###############################################################################
-# - Job should only be ran on Linux
+# - Job should only be ran on Linux or Mac
 #
-if [[ "${OSTYPE}" != "linux-gnu" ]];
+if [[ "${OSTYPE}" != "linux-gnu" ]] && [[ "${OSTYPE}" != darwin* ]];
 then
   die_and_moan \
-  "${0}: 'OSTYPE' should be 'linux-gnu'"
+  "${0}: 'OSTYPE' should be 'linux-gnu' or darwin*"
 fi
 
 ###############################################################################
@@ -125,7 +125,9 @@ fi
 ###############################################################################
 # - Ensure that python / Rscript are ran from $CONDA_PREFIX/bin/
 
-python "${BUDDY_PY}/buddy/validate_env_contents.py" "${CONDA_PREFIX}" "${IS_R_REQUIRED}"
+python "${BUDDY_PY}/buddy/validate_env_contents.py" \
+  "${CONDA_PREFIX}" \
+  "${IS_R_REQUIRED}"
 
 ###############################################################################
 # If the current project uses R within jupyter:
