@@ -76,3 +76,31 @@ class TestDirExistence(object):
             mocker.patch("builtins.print")
             run_workflow("empty.yaml")
             print.assert_not_called()
+
+    def test_with_tilde_prefixed_dirs(self, tmpdir, mocker):
+        yaml = dedent(
+            """
+            # some_comment
+            ~/in_my_home_dir/
+            
+            """
+        )
+        # pass an empty yaml
+        # move into tmpdir
+        # ensure the workflow exits 0 and prints nothing
+
+        yaml_path = "empty.yaml"
+        with sh.pushd(tmpdir):
+            with open(yaml_path, "w") as f:
+                print(yaml, file=f)
+
+            for d in ["existing_dir", "an_existing_dir", "a_dir/with_a_subdir"]:
+                os.makedirs(d, exist_ok=True)
+                assert os.path.isdir(d)
+
+            with pytest.raises(Exception) as e:
+                mocker.patch("builtins.print")
+                run_workflow(yaml_path)
+                print.assert_called_with(
+                    "Don't use tilde `~` in dirnames in `validate_dir_existence.py`"
+                )
