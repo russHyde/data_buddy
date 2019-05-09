@@ -9,6 +9,7 @@ import argparse
 import errno
 import os
 import os.path
+import sys
 
 from buddy.file_utils import read_yaml
 
@@ -22,7 +23,15 @@ def run_workflow(yaml_path):
     :return:
     """
     dirs = read_yaml(yaml_path)
+
     for current_dir in dirs:
+        if not os.path.expanduser(current_dir) == current_dir:
+            print(
+                "Don't use tilde `~` in dirnames in `validate_dir_existence.py`",
+                file=sys.stderr,
+            )
+            raise Exception()
+
         if not os.path.isdir(current_dir):
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), current_dir
