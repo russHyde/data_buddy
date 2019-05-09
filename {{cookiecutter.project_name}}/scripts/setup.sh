@@ -27,7 +27,7 @@ export LIB_DIR="./lib"
 export BIN_DIR="./bin"
 
 export JOB_VARS_FILE="${CONFIG_DIR}/job_specific_vars.sh"
-export CHECK_DIRS_FILE="${CONFIG_DIR}/check_these_dirs.txt"
+export CHECK_DIRS_FILE="${CONFIG_DIR}/check_these_dirs.yaml"
 export MAKE_DIRS_FILE="${CONFIG_DIR}/make_these_subdirs.txt"
 export MAKE_LINKS_FILE="${CONFIG_DIR}/make_these_links.txt"
 export MAKE_FILE_COPIES_FILE="${CONFIG_DIR}/copy_these_files.txt"
