@@ -176,23 +176,14 @@ do
   TARGET=$( expand_tilde "${ARY[0]}"  )
   LINKNAME=$( expand_tilde "${ARY[1]}" )
 
-  # Check that the target is an existing file/dir or a link and die if not
-  if [[ ! -f "${TARGET}" ]] && \
-     [[ ! -d "${TARGET}" ]] && \
-     [[ ! -L "${TARGET}" ]];
-  then
-    die_and_moan \
-    "${0}: target ${TARGET} isn't an existing dir/file/link"
-  fi
+  # TODO: convert make_soft_links.py to a .yaml-parsing workflow then rewrite
+  # the above code - calling the script with a .yaml as input.
 
+  # The target should be an existing file/dir or a link
+  #
   # The directory in which the link is to be placed should be made if it
   #   doesn't exist
-  LINKDIR=$(dirname  "${LINKNAME}")
-  if [[ ! -d "${LINKDIR}" ]];
-  then
-    mkdir -p "${LINKDIR}"
-  fi
-
+  #
   # If the link path is already in use, it must be a link and point to the
   # the same path as stored in TARGET
   #
@@ -212,26 +203,9 @@ do
   # link and the intended target. This allows us to link to a filepath that is
   # also a link.
   #
-  if [[ -e "${LINKNAME}" ]] || \
-     [[ -L "${LINKNAME}" ]];
-  then
-    if [[ ! -L "${LINKNAME}" ]];
-    then
-      die_and_moan \
-      "${0}: intended link ${LINKNAME} already exists but is not a link"
-    fi
-    if [[ "$(readlink -f ${LINKNAME})" != "$(readlink -f ${TARGET})" ]];
-    then
-      die_and_moan \
-      "${0}: intended link ${LINKNAME} already exists and points to a \
-      \n different location than planned"
-    fi
-  else
-    ln --symbolic \
-       --relative \
-       "${TARGET}" \
-       "${LINKNAME}"
-  fi
+  MAKE_LINK_SCRIPT="${BUDDY_PY}/buddy/make_symlink.py"
+  python3 ${MAKE_LINK_SCRIPT} ${TARGET} ${LINKNAME}
+
 done < "${MAKE_LINKS_FILE}"
 
 ###############################################################################
