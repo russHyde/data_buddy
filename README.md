@@ -34,4 +34,4 @@ Since `data_buddy` will progressively change, it should be copied into any new
 project (for the moment at least).
 
 All config files for use in `data_buddy` should be stored in
-`./.sidekick/setup_config`
+`./.sidekick/setup`
