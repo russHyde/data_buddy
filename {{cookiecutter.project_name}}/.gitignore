@@ -33,6 +33,7 @@ doc/figure
 # Application logs
 
 logs
+log.txt
 
 .snakemake
 .Rhistory
