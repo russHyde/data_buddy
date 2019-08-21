@@ -12,9 +12,17 @@
 
 Change in to the project directory.
 
-If necessary, create the conda environment for the main project:
+If necessary, create the conda environment for the main project.
+You can clone the environment (same build numbers / repository locations
+etc) using the following:
 
 `conda create --name {{cookiecutter.conda_env}} --file envs/requirements.txt`
+
+If that fails (eg, if some builds are no longer available, or you are on
+a non-linux system eg, OSX) you can make a conda environment that
+approximates the above (with matching release numbers) as follows:
+
+`conda create env --name {{cookiecutter.conda_env}} --file envs/environment.yml`
 
 Activate the project's environment
 
