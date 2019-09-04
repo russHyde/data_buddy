@@ -73,8 +73,24 @@ function build_r_package {
 # define function for installing the R package
 
 function install_r_package {
-  # # install the R package if it is newer than the installed R package
+  # To call this function:
   # install_r_package "${PKGNAME}" "${PKG_TAR}" "${R_LIB_DIR}"
+
+  # Every R package installed here should have:
+  # - a package archive (eg, lib/built_packages/<some_pkg>_0.1.2.3.tar.gz)
+  #
+  # ... and should be installed into a subdirectory of `${R_LIB_DIR}` (eg,
+  # ~/miniconda/envs/<current_env>/lib/R/libs/<some_pkg>/)
+
+  # An R package should be installed from a package archive if:
+  # - the package is not currently installed (ie, it is absent from the R
+  # library for the current environment)
+  # - the archive is newer than the currently-installed version of the package
+  # (where there are multiple archives for the same package in
+  # lib/built_packages, this should also ensure that only the most recently
+  # built archive will be installed)
+  # - the dependencies for the package are installed in the current environment
+  # (an error should be thrown if any dependencies are missing)
 
   PKGNAME="${1}"
   PKG_LOCAL_TAR="${2}"
@@ -97,13 +113,15 @@ function install_r_package {
   #   of the package predates the available version
   # ==> therefore install it
 
+  # By using `R CMD install` instead of `Rscript -e 'install.packages(...)'` we
+  # ensure that if a package fails to install (eg, due to missing dependencies)
+  # then this setup script should die
+
   if [[ ! -d "${R_LIB_DIR}/${PKGNAME}" ]] ||
      [[ "${R_LIB_DIR}/${PKGNAME}" -ot "${PKG_LOCAL_TAR}" ]];
   then
     echo "*** Installing into ${R_LIB_DIR} ***" >&2
-    Rscript -e "pkg = commandArgs(trailingOnly = TRUE)" \
-            -e "install.packages(pkg, repos = NULL, type = 'source')" \
-            ${PKG_LOCAL_TAR}
+    R CMD install ${PKG_LOCAL_TAR}
   fi
 
 }
@@ -188,8 +206,8 @@ fi
 #   build that package and put the package-archive into
 #   ${LIB_DIR}/built_packages
 #
-if [[ -d "${LIB_DIR}/copied_packages" ]] || \
-   [[ -d "${LIB_DIR}/cloned_packages" ]];
+if [[ -d "${LIB_DIR}/cloned_packages" ]] || \
+   [[ -d "${LIB_DIR}/copied_packages" ]];
 then
   for PKG_PATH in \
     $(find "${LIB_DIR}/cloned_packages" -maxdepth 1 -mindepth 1 -type d) \
@@ -225,10 +243,10 @@ then
 
     # The package archives are like
     #   ${LIB_DIR}/built_packages/pkgname_0.1.2.333.tar.gz
-    LOCAL_PKGNAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
+    PKG_NAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
 
     # Install the R package if it is newer than the installed R package
-    install_r_package "${LOCAL_PKGNAME}" "${PKG_TAR}" "${R_LIB_DIR}"
+    install_r_package "${PKG_NAME}" "${PKG_TAR}" "${R_LIB_DIR}"
   done
 fi
 
