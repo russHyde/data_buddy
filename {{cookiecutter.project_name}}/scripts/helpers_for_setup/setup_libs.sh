@@ -113,7 +113,7 @@ function install_r_package {
   #   of the package predates the available version
   # ==> therefore install it
 
-  # By using `R CMD install` instead of `Rscript -e 'install.packages(...)'` we
+  # By using `R CMD INSTALL` instead of `Rscript -e 'install.packages(...)'` we
   # ensure that if a package fails to install (eg, due to missing dependencies)
   # then this setup script should die
 
@@ -121,7 +121,7 @@ function install_r_package {
      [[ "${R_LIB_DIR}/${PKGNAME}" -ot "${PKG_LOCAL_TAR}" ]];
   then
     echo "*** Installing into ${R_LIB_DIR} ***" >&2
-    R CMD install ${PKG_LOCAL_TAR}
+    R CMD INSTALL -l "${R_LIB_DIR}" ${PKG_LOCAL_TAR}
   fi
 
 }
