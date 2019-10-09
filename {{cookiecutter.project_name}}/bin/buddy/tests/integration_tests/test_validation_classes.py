@@ -38,6 +38,28 @@ class TestMd5sum(object):
                 get_md5sum(f0)
 
 
+class TestMd5sumOnBinaryFile(object):
+    def test_md5sum_for_utf8_binary_file(self, tmpdir):
+        with sh.pushd(tmpdir):
+            f_binary = "binary_file"
+            with open(f_binary, "wb") as f:
+                f.write(b"\x0a\x1b\x2c")
+                f.write(b"\x3d\x4e\x5f")
+            # computed using md5sum at command line:
+            # - might be better to compare the python result with subprocess.run(["md5sum", f_binary])
+            assert get_md5sum(f_binary) == "76aa4e16e87c63faa6cb03fc5f7f17f9"
+
+    def test_md5sum_for_latin1_binary_file(self, tmpdir):
+        with sh.pushd(tmpdir):
+            f_latin1 = "latin1_file"
+            with open(f_latin1, "wb") as f:
+                # acute-'e'
+                f.write(u"abcd\xe91".encode("latin-1"))
+                f.write(u"\x3d\x4e\x5f".encode("latin-1"))
+            # computed using md5sum at command line
+            assert get_md5sum(f_latin1) == "ddb57847096b82ccaf7d84a66c03584b"
+
+
 class TestMd5sumOnSubsetOfFile(object):
     def test_comment_only_file_has_empty_md5sum(self, tmpdir):
         with sh.pushd(tmpdir):
