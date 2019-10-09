@@ -38,10 +38,18 @@ def get_md5sum(filepath, comment=None):
         my_predicate = lambda x: not x.startswith(comment)
 
     try:
+        # We assume the file isn't binary
         my_hash = hashlib.md5()
         with open(filepath, "r") as f:
             for line in filter(my_predicate, f):
                 my_hash.update(line.encode("utf-8"))
+    except UnicodeDecodeError:
+        # If there are any encoding errors, we try treating the file as if it's
+        # binary
+        my_hash = hashlib.md5()
+        with open(filepath, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                my_hash.update(chunk)
     except:
         raise
 
