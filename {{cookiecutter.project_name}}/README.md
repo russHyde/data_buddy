@@ -50,3 +50,13 @@ The flags recommended for the current project are as follows:
 (recommended within iterative projects):
 
 `./sidekick validate --yaml <results_validation_tests>.yaml`
+
+----
+
+[Optional] If you want to view the snakemake workflow for the project, or
+for a subjob therein run this in the appropriate project root directory
+(requires that `graphviz` is installed):
+
+`snakemake --dag --force | dot -Tsvg > dag.svg`
+
+Then view the file `dag.svg` in your browser
