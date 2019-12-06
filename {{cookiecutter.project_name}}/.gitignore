@@ -25,6 +25,7 @@ doc/figure
 *.pptx
 *.pdf
 *.png
+*.svg
 *.jpg
 *.jpeg
 *.html
