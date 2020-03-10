@@ -22,6 +22,9 @@ from os.path import join
 
 # Main rule
 
+rule all:
+    input: []
+
 # Rules
 
 # Rules from snakemake *.smk scripts
