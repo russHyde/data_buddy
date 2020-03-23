@@ -57,39 +57,7 @@ function define_package_skeleton {
 
 ###############################################################################
 
-# define function for setting up the R package:
-function build_r_package {
-  JNAME="${1}"
-  PNAME="${2}"
-  R_INC="${3}"
-  LIB_DIR="${4}"
-  # Check that r_includes is an absolute path to an existing file
-  if [[ "${R_INC:0:1}" != "/" ]] && \
-     [[ "${R_INC:0:2}" != "~" ]] && \
-     [[ "${R_INC:0:2}" != "~/" ]];
-  then
-    die_and_moan \
-    "${0}: Path to R_INCLUDES should be absolute in setup_libs.sh"
-  fi
-
-  # Check that ${LIB_DIR}/Makefile exists
-  # - Any other requirements of ${LIB_DIR}/Makefile should be checked by itself
-  if [[ ! -f "${LIB_DIR}/Makefile" ]];
-  then
-    die_and_moan \
-    "${0}: Makefile for building the libraries/packages for this job is \
-    \n ... missing from lib-dir: ${LIB_DIR}"
-  fi
-
-  cd "${LIB_DIR}"
-  make pkgname="${PNAME}" \
-       r_includes="${R_INC}"
-  cd ..
-}
-
-###############################################################################
-
-# define function for installing the R package
+# Define function for installing the R package
 
 function install_r_package {
   # To call this function:
