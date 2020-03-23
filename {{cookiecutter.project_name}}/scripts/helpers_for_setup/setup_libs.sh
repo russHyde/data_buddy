@@ -57,7 +57,7 @@ function define_package_skeleton {
 
 ###############################################################################
 
-# Define function for installing the R package
+# Function for installing an R package
 
 function install_r_package {
   # To call this function:
@@ -91,14 +91,15 @@ function install_r_package {
     ... Current value is ${R_LIB_DIR}"
   fi
 
-  # If PKG_R_DIR does not exist, the package has not been installed yet
+  # If the package does not have a subdirectory in ${R_LIB_DIR}, then it has
+  # not been installed yet
   #  ==> therefore install it
 
-  # Get timestamp for PKG_R_DIR (the version installed in conda-R) and for
+  # Get timestamp for the pkg version installed in conda-R and for
   #   PKG_LOCAL_TAR (the recently built version of the package).
-  # If PKG_LOCAL_TAR is more recent that PKG_R_DIR, then the installed version
-  #   of the package predates the available version
-  # ==> therefore install it
+  # If PKG_LOCAL_TAR is more recent than the installed version, then the
+  # package has been updated
+  #  ==> therefore reinstall it
 
   # By using `R CMD INSTALL` instead of `Rscript -e 'install.packages(...)'` we
   # ensure that if a package fails to install (eg, due to missing dependencies)
