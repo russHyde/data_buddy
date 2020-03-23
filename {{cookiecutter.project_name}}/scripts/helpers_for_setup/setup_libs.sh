@@ -137,13 +137,20 @@ function install_r_package {
 if [[ -z "${JOBNAME}" ]] || \
    [[ -z "${IS_R_REQUIRED}" ]] || \
    [[ -z "${IS_R_PKG_REQUIRED}" ]] || \
-   [[ -z "${CONDA_PREFIX}" ]];
+   [[ -z "${CONDA_PREFIX}" ]] || \
+   [[ -z "${LIB_DIR}" ]];
 then
   die_and_moan \
-  "${0}: JOBNAME, IS_R_REQUIRED, IS_R_PKG_REQUIRED and CONDA_PREFIX should be \
-  \n ... defined, CONDA_PREFIX is usually set up by the anaconda environment \
-  \n ... `setup_libs.R` should have been called from `setup.sh`."
+  "${0}: JOBNAME, LIB_DIR, IS_R_REQUIRED, IS_R_PKG_REQUIRED and CONDA_PREFIX \
+  \n ... should be defined. CONDA_PREFIX is usually set up by the anaconda \
+  \n ...  environment. `setup_libs.R` should have been called from `setup.sh`."
 fi
+
+# This script is used to build R packages from source
+R_BUILDER_SCRIPT="${SETUP_HELPERS_DIR}/package_builder.R"
+
+# The R library directory for the current conda environment is:
+CONDA_R_LIB="${CONDA_PREFIX}/lib/R/library"
 
 ###############################################################################
 
@@ -215,7 +222,6 @@ then
     $(find "${LIB_DIR}/copied_packages" -maxdepth 1 -mindepth 1 -type d);
   do
 
-    R_BUILDER_SCRIPT="${SETUP_HELPERS_DIR}/package_builder.R"
     if [[ ! -f "${R_BUILDER_SCRIPT}" ]]; then
       die_and_moan \
         "${0}: the R-package building script ${R_BUILDER_SCRIPT} is missing"
@@ -239,15 +245,12 @@ then
   for PKG_TAR in \
     $(find "${LIB_DIR}/built_packages" -name "*.tar.gz");
   do
-    # The R library directory for the current conda environment is:
-    R_LIB_DIR="${CONDA_PREFIX}/lib/R/library"
-
     # The package archives are like
     #   ${LIB_DIR}/built_packages/pkgname_0.1.2.333.tar.gz
     PKG_NAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
 
     # Install the R package if it is newer than the installed R package
-    install_r_package "${PKG_NAME}" "${PKG_TAR}" "${R_LIB_DIR}"
+    install_r_package "${PKG_NAME}" "${PKG_TAR}" "${CONDA_R_LIB}"
   done
 fi
 
