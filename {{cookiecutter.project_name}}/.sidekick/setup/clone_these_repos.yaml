@@ -12,4 +12,4 @@
 # repo_identifier:
 #     url: git@github.com:user/my_package.git
 #     commit: zyx9876
-#     output: ./lib/cloned_packages/my_package
+#     output: ./lib/remote/my_package
