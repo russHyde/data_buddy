@@ -21,6 +21,42 @@ die_and_moan()
 
 ###############################################################################
 
+# Function to define a skeleton for a local R package
+
+function define_package_skeleton {
+
+  PKGNAME="${1}"
+  PARENT_DIR="${2}"
+
+  if [[ -z "${PKGNAME}" ]];
+  then
+    die_and_moan \
+    "${0}: PKGNAME should be defined when defining the package-skeleton for \
+    \n ... a subjob"
+  fi
+
+  if [[ ! -d "${PARENT_DIR}" ]];
+  then
+    die_and_moan \
+      "${0}: PARENT_DIR should be a directory in 'define_package_skeleton'. \
+      \n ... PARENT_DIR='${PARENT_DIR}'"
+  fi
+
+  # If no local package exists by this name (<PKGNAME>), then initialise one
+  # It's source code will be stored in ./lib/local/<PKGNAME>
+
+  if [[ ! -d "${PARENT_DIR}/${PKGNAME}"  ]];
+  then
+    Rscript \
+      -e "args <- commandArgs(trailingOnly = TRUE);" \
+      -e ".id <- function(x) {x};" \
+      -e "utils::package.skeleton(name = args[1], path = args[2], list = '.id')" \
+      "${PKGNAME}" "${PARENT_DIR}"
+  fi
+}
+
+###############################################################################
+
 # define function for setting up the R package:
 function build_r_package {
   JNAME="${1}"
