@@ -7,26 +7,9 @@ set -o pipefail
 ###############################################################################
 # Script to setup R package for use in the current project
 #
-# Assumes that all RH-generated R function scripts have been put in
-#   subdirectories of ${LIB_DIR}/global_rfuncs or ${LIB_DIR}/local_rfuncs
-#   and that if the R/ subdirectory of both of these dirs is empty, then
-#   this script aborts, since there is no R package to build if there is no
-#   source code for that package
-#
 # This script should be called by ./scripts/setup.sh
 #   - the global variable IS_R_REQUIRED should exist and should be 1 for this
 #     script to build an R package
-#   - TODO - ? considerations for building python package structures
-#
-# Checks that ${LIB_DIR}/Makefile and ${LIB_DIR}/setup.DESCRIPTION.R exist and
-#   assumes they take arguments 'jobname' and 'r_includes'
-#
-# If the file does not already exist, this script will make the empty file
-#   ${LIB_DIR}/conf/include_these_rpackages.txt
-#   but if it already exists then the file is used as a list of imported
-#   packages
-#   - if this file is empty, it is assumed that the job-specific package does
-#     not need to import any packages
 #
 ###############################################################################
 
@@ -125,6 +108,24 @@ function install_r_package {
   fi
 
 }
+
+###############################################################################
+
+# -- script -- #
+
+# This script builds and installs any R packages that are stored in
+# `${LIB_DIR}/remote` or `${LIB_DIR}/local`. "*.tar.gz" files for each package
+# are stored in `${LIB_DIR}/built` and then installed into the CONDA
+# environment.
+#
+# Packages in `./lib/remote` are built/installed first and building/installing
+# occurs sequentially for each package (rather than building all packages and
+# then installing them all)
+#
+# Where the user states to build a project-specific package,
+# (with IS_R_PKG_REQUIRED=1), but such a package does not yet exist, this
+# script initialises an empty package in `${LIB_DIR}/local/<PKGNAME>`. The user
+# should modify this package skeleton as they would for any other R package.
 
 ###############################################################################
 
@@ -249,9 +250,5 @@ then
     install_r_package "${PKG_NAME}" "${PKG_TAR}" "${R_LIB_DIR}"
   done
 fi
-
-###############################################################################
-# ? skeleton code for building python package?
-# <TODO>
 
 ###############################################################################
