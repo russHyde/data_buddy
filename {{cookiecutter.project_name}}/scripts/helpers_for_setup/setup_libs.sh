@@ -115,6 +115,50 @@ function install_r_package {
 
 ###############################################################################
 
+# For each package in a source directory (typically lib/local or lib/remote),
+# this function will build a tar.gz file from that R package and then install
+# the package from that tar file into the current conda env.
+
+function build_and_install_each_package {
+  # SRC_DIR
+  # BUILD_DIR
+  # CONDA_LIB
+  # BUILDER_SCRIPT
+
+  SRC_DIR="${1}"
+  BUILD_DIR="${2}"
+  CONDA_LIB="${3}"
+  BUILDER_SCRIPT="${4}"
+
+  if [[ ! -d "${BUILD_DIR}" ]]; then mkdir -p "${BUILD_DIR}"; fi
+
+  if [[ ! -f "${BUILDER_SCRIPT}" ]]; then
+    die_and_moan \
+      "${0}: the R-package building script ${BUILDER_SCRIPT} is missing"
+  fi
+
+  for PKG_PATH in \
+    $(find "${SRC_DIR}" -maxdepth 1 -mindepth 1 -type d);
+  do
+    PKG_NAME=$(basename "${PKG_PATH}")
+
+    # Build a tar.gz archive for the current package
+    Rscript "${BUILDER_SCRIPT}" "${PKG_PATH}" "${BUILD_DIR}"
+
+    # Then install the latest .tar.gz corresponding to the current package
+    # (Note that this is a bit of a hack, and may lead to multiple .tar.gz
+    # getting installed sequentially for the same package)
+    for PKG_TAR in \
+      $(find "${LIB_DIR}/built" -name "${PKG_NAME}_*.tar.gz")
+    do
+      # Install the R package if it is newer than the installed R package
+      install_r_package "${PKG_NAME}" "${PKG_TAR}" "${CONDA_LIB}"
+    done
+  done
+}
+
+###############################################################################
+
 # -- script -- #
 
 # This script builds and installs any R packages that are stored in
