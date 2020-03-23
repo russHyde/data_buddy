@@ -9,5 +9,4 @@
 # scripts/ etc)
 
 # Examples:
-# ./lib/conf/include_into_rpackage.txt
 # TODO.txt
