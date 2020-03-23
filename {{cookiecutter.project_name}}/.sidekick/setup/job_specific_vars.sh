@@ -28,7 +28,6 @@ export IS_JUPYTER_R_REQUIRED={{cookiecutter.is_jupyter_r_kernel_required}}
 if [[ ! -z "${IS_R_PKG_REQUIRED}" ]] && [[ ${IS_R_PKG_REQUIRED} -ne 0 ]];
 then
   export PKGNAME="{{cookiecutter.r_pkg_name}}"
-  export R_INCLUDES_FILE="${PWD}/lib/conf/include_into_rpackage.txt"
 fi
 
 # ENVNAME is the name of the job-specific conda environment
