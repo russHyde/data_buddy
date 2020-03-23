@@ -202,104 +202,26 @@ CONDA_R_LIB="${CONDA_PREFIX}/lib/R/library"
 
 ###############################################################################
 
-# Call the function for setting up the R package if:
-#   - IS_R_REQUIRED;
-#   - IS_R_PKG_REQUIRED
-#   - and there are some .R scripts in ${LIB_DIR}/local_rfuncs/R or
-#   ${LIB_DIR}/global_rfuncs/R;
-#   - and a Makefile is found in ${LIB_DIR} (checked in build_r_package)
-#   - and a "setup.DESCRIPTION.R" file is found in ${LIB_DIR} (checked in
-#   Makefile)
-#   - and the global vars JOBNAME and PKGNAME are defined (checked above)
-
-# Call the function for installing the R package if additionally:
-#   - the built R-package has never been installed
-#   - or the tar.gz for the built R-package is newer than the installed version
+# If the user wants to make a project-specific package (and one doesn't
+# currently exist), put a skeleton package for holding the source code into
+# ./lib/local/<PKGNAME>
+#
+# The user should modify this skeleton if they want to add extra code and then
+# rerun `./sidekick setup` to build / install it.
 
 if [[ ${IS_R_REQUIRED} -ne 0 ]] && [[ ${IS_R_PKG_REQUIRED} -ne 0 ]];
 then
-  if [[ -z "${PKGNAME}" ]];
-  then
-    die_and_moan \
-    "${0}: PKGNAME should be defined, since IS_R_PKG_REQUIRED is true for this \
-    \n ... project"
-  fi
-
-  # Set default val for the file that specifies which packages to include in
-  # the job-specific pacakge
-  if [[ -z "${R_INCLUDES_FILE}" ]];
-  then
-    R_INCLUDES_FILE="${LIB_DIR}/conf/include_into_rpackage.txt"
-    export R_INCLUDES_FILE
-  fi
-
-  # Determine if there are any function scripts in lib/global_rfuncs/R/*.R or
-  #   lib/local_rfuncs/R/*.R for packaging up
-  #   - The global files should have been copied in by setup_dirs.sh based on
-  #     ./.sidekick/setup/copy_these_files.txt (or cloned from bitbucket)
-  R_FUNCTION_FILES=(`find "${LIB_DIR}/"*_rfuncs/R/ -type f -name "*.R"`)
-
-  {% raw -%}
-  NUM_R_FILES=${#R_FUNCTION_FILES[@]}
-  {%- endraw %}
-
-  # Build/install the package if there are any files to package up and the
-  # scripts required for packaging exist
-  #   -
-  # All built packages should be placed into ${LIB_DIR}/built_packages/
-  # and are installed from this directory
-  if [[ ${NUM_R_FILES} > 0 ]];
-  then
-    build_r_package \
-      "${JOBNAME}" \
-      "${PKGNAME}" \
-      "${R_INCLUDES_FILE}" \
-      "${LIB_DIR}"
-  fi
+  define_package_skeleton "${PKGNAME}" "${LIB_DIR}/local"
 fi
 
-# Where I've copied one of my own packages into the source code for a package,
-#   build that package and put the package-archive into
-#   ${LIB_DIR}/built_packages
-#
-if [[ -d "${LIB_DIR}/cloned_packages" ]] || \
-   [[ -d "${LIB_DIR}/copied_packages" ]];
-then
-  for PKG_PATH in \
-    $(find "${LIB_DIR}/cloned_packages" -maxdepth 1 -mindepth 1 -type d) \
-    $(find "${LIB_DIR}/copied_packages" -maxdepth 1 -mindepth 1 -type d);
-  do
+# Build & Install packages (remotes first)
 
-    if [[ ! -f "${R_BUILDER_SCRIPT}" ]]; then
-      die_and_moan \
-        "${0}: the R-package building script ${R_BUILDER_SCRIPT} is missing"
-    fi
+build_and_install_each_package \
+  "${LIB_DIR}/remote" \
+  "${LIB_DIR}/built" "${CONDA_R_LIB}" ${R_BUILDER_SCRIPT}
 
-    mkdir -p "${LIB_DIR}/built_packages"
-
-    Rscript \
-      "${R_BUILDER_SCRIPT}" \
-      "${PKG_PATH}" \
-      "${LIB_DIR}/built_packages"
-  done
-fi
-
-###############################################################################
-
-# Install any of the packages that were copied into the current R environment
-#
-if [[ -d "${LIB_DIR}/built_packages" ]];
-then
-  for PKG_TAR in \
-    $(find "${LIB_DIR}/built_packages" -name "*.tar.gz");
-  do
-    # The package archives are like
-    #   ${LIB_DIR}/built_packages/pkgname_0.1.2.333.tar.gz
-    PKG_NAME=$(basename ${PKG_TAR} | sed -e "s/_*[0-9.]\+tar\.gz//")
-
-    # Install the R package if it is newer than the installed R package
-    install_r_package "${PKG_NAME}" "${PKG_TAR}" "${CONDA_R_LIB}"
-  done
-fi
+build_and_install_each_package \
+  "${LIB_DIR}/local" \
+  "${LIB_DIR}/built" "${CONDA_R_LIB}" ${R_BUILDER_SCRIPT}
 
 ###############################################################################
