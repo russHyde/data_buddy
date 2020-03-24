@@ -1,0 +1,20 @@
+To add R packages to the environment for this project there are several
+approaches:
+
+1) If at all possible, use `conda install <packages>`, then update the conda
+environment in envs/environment.yml and envs/requirements.txt
+
+2) If there's a remote repo that you want to use, add it's github URL and
+the specific commit to `.sidekick/setup/clone_these_repos.yaml` and make sure
+the local path is `./lib/remote/<packageName>`. [If you do this, you are
+reponsible for ensuring that the conda env has all the remote packages
+dependencies installed]. Since remotes are commit stamped, the directory
+./lib/remote is not stored under version control.
+
+3) If you want to write a project-specific R package, or you want to copy in an
+R package and keep it under version control, store that package in
+`./lib/local`. For project-specific R packages, you can set
+"IS_R_PKG_REQUIRED=1" in `./sidekick/setup/job_specific_vars.sh` and add a
+package name. The next time you run `./sidekick setup` it will add a skeleton R
+package to the project (you can also define this variable when initialising
+your analysis project using cookiecutter).
