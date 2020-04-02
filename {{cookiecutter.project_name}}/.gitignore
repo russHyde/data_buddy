@@ -26,11 +26,14 @@ doc/figure
 *.jpeg
 *.html
 *.jar
+*.aux
+*.out
 
 # Application logs
 
 logs
 log.txt
+*.log
 
 .snakemake
 **/.nextflow/*
