@@ -28,6 +28,7 @@ doc/figure
 *.jar
 *.aux
 *.out
+*.tex
 
 # Application logs
 
