@@ -6,6 +6,7 @@
 
 data
 .RData
+*.rds
 *.gz
 *.zip
 
