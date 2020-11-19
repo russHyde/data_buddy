@@ -35,3 +35,15 @@ project (for the moment at least).
 
 All config files for use in `data_buddy` should be stored in
 `./.sidekick/setup`
+
+----
+
+To run `./sidekick setup` your environment should contain:
+```
+sh
+pyyaml
+# and for R-based projects
+r-base
+r-desc
+r-devtools
+```
